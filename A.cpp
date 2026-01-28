@@ -102,7 +102,7 @@ using namespace std;
 const double PI = 3.141592653589793;
 
 
-// VTK ÎÄ¼ş¶ÁÈ¡
+// VTK æ–‡ä»¶è¯»å–
 vtkSmartPointer<vtkPolyData> Reader_VTK(const char* path_name, const char* file_name) {
     if (!path_name || !file_name) {
         cerr << "Error: Invalid file path!" << endl;
@@ -117,7 +117,7 @@ vtkSmartPointer<vtkPolyData> Reader_VTK(const char* path_name, const char* file_
     return Poly_Data;
 }
 
-// ¼ÆËãÈı½ÇĞÎ·¨Ïß
+// è®¡ç®—ä¸‰è§’å½¢æ³•çº¿
 void ComputeTriangleNormal(vtkSmartPointer<vtkPoints> points, const vtkIdType* ptIds, double* normal) {
     double p1[3], p2[3], p3[3];
     points->GetPoint(ptIds[0], p1);
@@ -131,62 +131,62 @@ void ComputeTriangleNormal(vtkSmartPointer<vtkPoints> points, const vtkIdType* p
     vtkMath::Normalize(normal);
 }
 
-// ¼ÆËãÁ½¸öÏòÁ¿µÄ¼Ğ½Ç
+// è®¡ç®—ä¸¤ä¸ªå‘é‡çš„å¤¹è§’
 double ComputeAngleBetweenVectors(double* v1, double* v2) {
     double dotProduct = vtkMath::Dot(v1, v2);
     double magnitudeV1 = vtkMath::Norm(v1);
     double magnitudeV2 = vtkMath::Norm(v2);
 
-    return acos(dotProduct / (magnitudeV1 * magnitudeV2)) * 180.0 / PI;  // ·µ»Ø½Ç¶È£¬µ¥Î»Îª¶È
+    return acos(dotProduct / (magnitudeV1 * magnitudeV2)) * 180.0 / PI;  // è¿”å›è§’åº¦ï¼Œå•ä½ä¸ºåº¦
 }
 
-// ¼ÆËãÖ×Áö±íÃæµãÓë¸Î°üÄ¤µÄ×îĞ¡¾àÀë
+// è®¡ç®—è‚¿ç˜¤è¡¨é¢ç‚¹ä¸è‚åŒ…è†œçš„æœ€å°è·ç¦»
 bool CheckMinDistanceToSkin(vtkSmartPointer<vtkPolyData> skin, double* tumorCenter, vtkSmartPointer<vtkPoints> points, const vtkIdType* ptIds) {
-    double minDistance = 1e6;  // ÉèÖÃÒ»¸ö¼«´óµÄ³õÊ¼×îĞ¡¾àÀë
+    double minDistance = 1e6;  // è®¾ç½®ä¸€ä¸ªæå¤§çš„åˆå§‹æœ€å°è·ç¦»
 
-    // »ñÈ¡Èı½ÇĞÎµÄÈı¸ö¶¥µã
+    // è·å–ä¸‰è§’å½¢çš„ä¸‰ä¸ªé¡¶ç‚¹
     double p1[3], p2[3], p3[3];
     points->GetPoint(ptIds[0], p1);
     points->GetPoint(ptIds[1], p2);
     points->GetPoint(ptIds[2], p3);
 
-    // ¼ÆËãÈı½ÇĞÎµÄ·¨ÏòÁ¿
+    // è®¡ç®—ä¸‰è§’å½¢çš„æ³•å‘é‡
     double normal[3] = { 0.0, 0.0, 0.0 };
     double v1[3] = { p2[0] - p1[0], p2[1] - p1[1], p2[2] - p1[2] };
     double v2[3] = { p3[0] - p1[0], p3[1] - p1[1], p3[2] - p1[2] };
     vtkMath::Cross(v1, v2, normal);
     vtkMath::Normalize(normal);
 
-    // ¼ÆËãÖ×ÁöÖÊĞÄµ½Èı½ÇĞÎÆ½ÃæµÄ¾àÀë
+    // è®¡ç®—è‚¿ç˜¤è´¨å¿ƒåˆ°ä¸‰è§’å½¢å¹³é¢çš„è·ç¦»
     double vectorToPoint[3] = { tumorCenter[0] - p1[0], tumorCenter[1] - p1[1], tumorCenter[2] - p1[2] };
     double distance = vtkMath::Dot(vectorToPoint, normal);
-    distance = fabs(distance); // È¡¾ø¶ÔÖµ£¬µÃµ½ÓëÆ½ÃæµÄ´¹Ö±¾àÀë
+    distance = fabs(distance); // å–ç»å¯¹å€¼ï¼Œå¾—åˆ°ä¸å¹³é¢çš„å‚ç›´è·ç¦»
 
     if (distance < minDistance) {
-        minDistance = distance;  // ¸üĞÂ×îĞ¡¾àÀë
+        minDistance = distance;  // æ›´æ–°æœ€å°è·ç¦»
     }
 
-    // Èç¹û×îĞ¡¾àÀëĞ¡ÓÚÔ¤ÉèµÄ°²È«¾àÀëãĞÖµ£¬Ôò·µ»Øfalse
-    if (minDistance < 5.0) { // ¼ÙÉè°²È«¾àÀëĞ¡ÓÚ5mm
+    // å¦‚æœæœ€å°è·ç¦»å°äºé¢„è®¾çš„å®‰å…¨è·ç¦»é˜ˆå€¼ï¼Œåˆ™è¿”å›false
+    if (minDistance < 5.0) { // å‡è®¾å®‰å…¨è·ç¦»å°äº5mm
         return false;
     }
 
     return true;
 }
 
-// ÅĞ¶ÏÏûÈÚÕëÂ·¾¶ÊÇ·ñÂú×ãÔ¼Êø
+// åˆ¤æ–­æ¶ˆèé’ˆè·¯å¾„æ˜¯å¦æ»¡è¶³çº¦æŸ
 bool CheckConstraints(vtkSmartPointer<vtkPolyData> skin, double* tumorCenter, vtkSmartPointer<vtkOBBTree> obbTree, const vtkIdType* ptIds, vtkSmartPointer<vtkPoints> points) {
     double avgDistance = 0.0;
     vtkSmartPointer<vtkPoints> intersectPoints = vtkSmartPointer<vtkPoints>::New();
 
-    // 1. °²È«¾àÀëÔ¼Êø
+    // 1. å®‰å…¨è·ç¦»çº¦æŸ
     for (int i = 0; i < 3; i++) {
         double point[3];
         points->GetPoint(ptIds[i], point);
 
-        // ¼ÆËãÖ×Áö±íÃæµãÓë¸Î°üÄ¤µÄ×îĞ¡¾àÀë
+        // è®¡ç®—è‚¿ç˜¤è¡¨é¢ç‚¹ä¸è‚åŒ…è†œçš„æœ€å°è·ç¦»
         if (obbTree->IntersectWithLine(tumorCenter, point, intersectPoints, nullptr)) {
-            return false; // Â·¾¶Óë¸Î°üÄ¤ÓĞ½»µã£¬Î¥·´ÁË°²È«¾àÀë
+            return false; // è·¯å¾„ä¸è‚åŒ…è†œæœ‰äº¤ç‚¹ï¼Œè¿åäº†å®‰å…¨è·ç¦»
         }
 
         double distance = sqrt(pow(point[0] - tumorCenter[0], 2) +
@@ -195,25 +195,25 @@ bool CheckConstraints(vtkSmartPointer<vtkPolyData> skin, double* tumorCenter, vt
         avgDistance += distance / 3.0;
     }
 
-    // °²È«¾àÀëÔ¼Êø: ¼ì²éÖ×Áö±íÃæµ½Â·¾¶µÄÆ½¾ù¾àÀëÊÇ·ñĞ¡ÓÚ5mm»ò´óÓÚ60mm
+    // å®‰å…¨è·ç¦»çº¦æŸ: æ£€æŸ¥è‚¿ç˜¤è¡¨é¢åˆ°è·¯å¾„çš„å¹³å‡è·ç¦»æ˜¯å¦å°äº5mmæˆ–å¤§äº60mm
     if (avgDistance < 5.0 || avgDistance > 60.0) {
         return false;
     }
 
-    // 2. ÇĞÏß½Ç¶ÈÔ¼Êø
-    // ¼ÆËã½»µã¸½½üÈı½ÇĞÎµÄ·¨Ïß
+    // 2. åˆ‡çº¿è§’åº¦çº¦æŸ
+    // è®¡ç®—äº¤ç‚¹é™„è¿‘ä¸‰è§’å½¢çš„æ³•çº¿
     double normal[3] = { 0.0, 0.0, 0.0 };
     for (int i = 0; i < 3; i++) {
         double point[3];
         points->GetPoint(ptIds[i], point);
-        // »ñÈ¡½»µã¸½½üÈı½ÇĞÎµÄ·¨Ïß
+        // è·å–äº¤ç‚¹é™„è¿‘ä¸‰è§’å½¢çš„æ³•çº¿
         ComputeTriangleNormal(skin->GetPoints(), ptIds, normal);
 
-        // ¼ÆËãÏûÈÚÕëÂ·¾¶Óë¸Î°üÄ¤±íÃæ·¨ÏßÖ®¼äµÄ¼Ğ½Ç
+        // è®¡ç®—æ¶ˆèé’ˆè·¯å¾„ä¸è‚åŒ…è†œè¡¨é¢æ³•çº¿ä¹‹é—´çš„å¤¹è§’
         double direction[3] = { point[0] - tumorCenter[0], point[1] - tumorCenter[1], point[2] - tumorCenter[2] };
         double angle = ComputeAngleBetweenVectors(direction, normal);
 
-        if (angle < 20.0) { // ÇĞÏß½Ç¶ÈĞ¡ÓÚ20¡ã£¬²»Âú×ãÔ¼Êø
+        if (angle < 20.0) { // åˆ‡çº¿è§’åº¦å°äº20Â°ï¼Œä¸æ»¡è¶³çº¦æŸ
             return false;
         }
     }
@@ -227,12 +227,12 @@ vtkSmartPointer<vtkPolyData> FilterValidSkinTriangles(vtkSmartPointer<vtkPolyDat
     vtkSmartPointer<vtkPolyData> artery,
     vtkSmartPointer<vtkPolyData> venoussystem,
     double* tumorCenter) {
-    // ½« skin µÄÊı¾İ×ª»»ÎªÈı½ÇĞÎ
+    // å°† skin çš„æ•°æ®è½¬æ¢ä¸ºä¸‰è§’å½¢
     vtkSmartPointer<vtkTriangleFilter> triangleFilter = vtkSmartPointer<vtkTriangleFilter>::New();
     triangleFilter->SetInputData(skin);
     triangleFilter->Update();
 
-    // ½¨Á¢¹Ç÷À¡¢¶¯ÂöºÍ¾²ÂöµÄ OBBTree£¬¹©ºóĞøÅö×²¼ì²âÊ¹ÓÃ
+    // å»ºç«‹éª¨éª¼ã€åŠ¨è„‰å’Œé™è„‰çš„ OBBTreeï¼Œä¾›åç»­ç¢°æ’æ£€æµ‹ä½¿ç”¨
     vtkSmartPointer<vtkOBBTree> obbTree = vtkSmartPointer<vtkOBBTree>::New();
     obbTree->SetDataSet(bone);
     obbTree->BuildLocator();
@@ -245,7 +245,7 @@ vtkSmartPointer<vtkPolyData> FilterValidSkinTriangles(vtkSmartPointer<vtkPolyDat
     obbTree2->SetDataSet(venoussystem);
     obbTree2->BuildLocator();
 
-    // ´æ´¢É¸Ñ¡ºóµÄÈı½ÇĞÎ
+    // å­˜å‚¨ç­›é€‰åçš„ä¸‰è§’å½¢
     vtkSmartPointer<vtkPolyData> filteredTriangles = vtkSmartPointer<vtkPolyData>::New();
     vtkSmartPointer<vtkCellArray> newCells = vtkSmartPointer<vtkCellArray>::New();
     vtkSmartPointer<vtkPoints> points = triangleFilter->GetOutput()->GetPoints();
@@ -257,22 +257,22 @@ vtkSmartPointer<vtkPolyData> FilterValidSkinTriangles(vtkSmartPointer<vtkPolyDat
 
     while (polys->GetNextCell(npts, ptIds)) {
         if (npts == 3) {
-            // »ñÈ¡Èı½ÇĞÎÈı¸ö¶¥µãµÄ×ø±ê
+            // è·å–ä¸‰è§’å½¢ä¸‰ä¸ªé¡¶ç‚¹çš„åæ ‡
             double p0[3], p1[3], p2[3];
             points->GetPoint(ptIds[0], p0);
             points->GetPoint(ptIds[1], p1);
             points->GetPoint(ptIds[2], p2);
 
-            // ¼ÆËãÈı½ÇĞÎÖÊĞÄ
+            // è®¡ç®—ä¸‰è§’å½¢è´¨å¿ƒ
             double centroid[3] = { (p0[0] + p1[0] + p2[0]) / 3.0,
                                    (p0[1] + p1[1] + p2[1]) / 3.0,
                                    (p0[2] + p1[2] + p2[2]) / 3.0 };
 
-            // ¼ÆËãÖ×ÁöÖĞĞÄµ½Èı½ÇĞÎÖÊĞÄµÄ¾àÀë
+            // è®¡ç®—è‚¿ç˜¤ä¸­å¿ƒåˆ°ä¸‰è§’å½¢è´¨å¿ƒçš„è·ç¦»
             double dist2 = vtkMath::Distance2BetweenPoints(tumorCenter, centroid);
-            // ½ö±£Áô¾àÀëĞ¡ÓÚ150µÄÈı½ÇĞÎ
+            // ä»…ä¿ç•™è·ç¦»å°äº150çš„ä¸‰è§’å½¢
             if (dist2 < 45.0 * 45.0) {
-                // ¼ì²éÆäËûÔ¼ÊøÌõ¼ş
+                // æ£€æŸ¥å…¶ä»–çº¦æŸæ¡ä»¶
                 bool valid = CheckConstraints(skin, tumorCenter, obbTree, ptIds, points);
                 if (valid) {
                     newCells->InsertNextCell(3, ptIds);
@@ -284,46 +284,46 @@ vtkSmartPointer<vtkPolyData> FilterValidSkinTriangles(vtkSmartPointer<vtkPolyDat
         filteredTriangles->SetPolys(newCells);
         return filteredTriangles;
 }
-// ¼ÙÉè Whale Àà´æ´¢ÁËÓÅ»¯¹ı³ÌÖĞµÄÃ¿¸ö½âµÄÎ»ÖÃºÍÊÊÓ¦¶È
+// å‡è®¾ Whale ç±»å­˜å‚¨äº†ä¼˜åŒ–è¿‡ç¨‹ä¸­çš„æ¯ä¸ªè§£çš„ä½ç½®å’Œé€‚åº”åº¦
 class Whale {
 public:
-    std::vector<double> position; // ´æ´¢¾¨ÓãÎ»ÖÃµÄÏòÁ¿ (x, y, z)
-    std::vector<double> fitness;  // ´æ´¢¾¨ÓãµÄÊÊÓ¦¶ÈÖµ
+    std::vector<double> position; // å­˜å‚¨é²¸é±¼ä½ç½®çš„å‘é‡ (x, y, z)
+    std::vector<double> fitness;  // å­˜å‚¨é²¸é±¼çš„é€‚åº”åº¦å€¼
 };
 
-// ¼ÆËãÏûÈÚÂ·¾¶µÄ³¤¶È£¨Â·¾¶ÊÇÓÉÁ½µã±íÊ¾µÄÖ±Ïß£©
+// è®¡ç®—æ¶ˆèè·¯å¾„çš„é•¿åº¦ï¼ˆè·¯å¾„æ˜¯ç”±ä¸¤ç‚¹è¡¨ç¤ºçš„ç›´çº¿ï¼‰
 double CalculatePathLength(const double* point1, const double* point2) {
-    return vtkMath::Distance2BetweenPoints(point1, point2);  // ¾àÀëµÄÆ½·½
+    return vtkMath::Distance2BetweenPoints(point1, point2);  // è·ç¦»çš„å¹³æ–¹
 }
 
-// ¼ÆËãÂ·¾¶ÓëÑª¹Ü/¹ÇÍ·µÄ×îĞ¡¾àÀë
+// è®¡ç®—è·¯å¾„ä¸è¡€ç®¡/éª¨å¤´çš„æœ€å°è·ç¦»
 double CalculatePathDistanceToStructure(const double* pathStart, const double* pathEnd, vtkSmartPointer<vtkOBBTree> obbTree) {
-    // ¼ÆËãÂ·¾¶Óë¹ÇÍ·»òÑª¹ÜµÄ×îĞ¡¾àÀë
-    // Ê¹ÓÃ OBBTree ²éÕÒÂ·¾¶ºÍÑª¹Ü/¹ÇÍ·Ö®¼äµÄ¾àÀë£¨¿ÉÒÔÓÅ»¯Â·¾¶µãµ½¹ÇÍ·¡¢Ñª¹ÜµÄ¾àÀë£©
+    // è®¡ç®—è·¯å¾„ä¸éª¨å¤´æˆ–è¡€ç®¡çš„æœ€å°è·ç¦»
+    // ä½¿ç”¨ OBBTree æŸ¥æ‰¾è·¯å¾„å’Œè¡€ç®¡/éª¨å¤´ä¹‹é—´çš„è·ç¦»ï¼ˆå¯ä»¥ä¼˜åŒ–è·¯å¾„ç‚¹åˆ°éª¨å¤´ã€è¡€ç®¡çš„è·ç¦»ï¼‰
     double minDistance = std::numeric_limits<double>::max();
-    // Äã¿ÉÒÔÍ¨¹ı±éÀú»ò²éÕÒÀ´»ñÈ¡Â·¾¶ºÍ½á¹¹Ö®¼äµÄ×îĞ¡¾àÀë£¬¼ÙÉèÕâÀï¼ÆËã×îĞ¡¾àÀëÎªÄ£Äâ
+    // ä½ å¯ä»¥é€šè¿‡éå†æˆ–æŸ¥æ‰¾æ¥è·å–è·¯å¾„å’Œç»“æ„ä¹‹é—´çš„æœ€å°è·ç¦»ï¼Œå‡è®¾è¿™é‡Œè®¡ç®—æœ€å°è·ç¦»ä¸ºæ¨¡æ‹Ÿ
     return minDistance;
 }
 
-// ¼ÆËãÂ·¾¶ÓëÖ×ÁöÖÊĞÄµÄÆ½ĞĞ¶È
+// è®¡ç®—è·¯å¾„ä¸è‚¿ç˜¤è´¨å¿ƒçš„å¹³è¡Œåº¦
 double CalculatePathAlignmentWithTumorCenter(const double* pathStart, const double* pathEnd, const double* tumorCenter) {
-    // ¼ÆËãÂ·¾¶µÄ·½ÏòÏòÁ¿
+    // è®¡ç®—è·¯å¾„çš„æ–¹å‘å‘é‡
     double pathVector[3] = { pathEnd[0] - pathStart[0], pathEnd[1] - pathStart[1], pathEnd[2] - pathStart[2] };
 
-    // ¼ÆËãÖ×ÁöÖÊĞÄµÄ·½ÏòÏòÁ¿
+    // è®¡ç®—è‚¿ç˜¤è´¨å¿ƒçš„æ–¹å‘å‘é‡
     double tumorVector[3] = { tumorCenter[0] - pathStart[0], tumorCenter[1] - pathStart[1], tumorCenter[2] - pathStart[2] };
 
-    // ¼ÆËãÁ½¸öÏòÁ¿µÄµã»ı£¬µã»ıÔ½´ó£¬±íÊ¾Ô½Æ½ĞĞ
+    // è®¡ç®—ä¸¤ä¸ªå‘é‡çš„ç‚¹ç§¯ï¼Œç‚¹ç§¯è¶Šå¤§ï¼Œè¡¨ç¤ºè¶Šå¹³è¡Œ
     double dotProduct = vtkMath::Dot(pathVector, tumorVector);
     double pathLength = vtkMath::Norm(pathVector);
     double tumorLength = vtkMath::Norm(tumorVector);
 
-    // ¼ÆËãÆ½ĞĞ¶È£¬µã»ıÔ½´ó£¬·½ÏòÔ½ÏàËÆ
+    // è®¡ç®—å¹³è¡Œåº¦ï¼Œç‚¹ç§¯è¶Šå¤§ï¼Œæ–¹å‘è¶Šç›¸ä¼¼
     double alignment = dotProduct / (pathLength * tumorLength);
     return alignment;
 }
 
-// ´ÓÈı½ÇĞÎÖĞ²ÉÑùµã£¨ÕâÀïÑ¡ÔñÈı½ÇĞÎÖØĞÄ£©
+// ä»ä¸‰è§’å½¢ä¸­é‡‡æ ·ç‚¹ï¼ˆè¿™é‡Œé€‰æ‹©ä¸‰è§’å½¢é‡å¿ƒï¼‰
 void SamplePointsFromTriangles(vtkSmartPointer<vtkPolyData> filteredSkin, std::vector<std::vector<double>>& sampledPoints) {
     vtkSmartPointer<vtkPoints> points = filteredSkin->GetPoints();
     vtkSmartPointer<vtkCellArray> polys = filteredSkin->GetPolys();
@@ -333,80 +333,80 @@ void SamplePointsFromTriangles(vtkSmartPointer<vtkPolyData> filteredSkin, std::v
     polys->InitTraversal();
 
     while (polys->GetNextCell(npts, ptIds)) {
-        if (npts == 3) { // Èç¹ûÊÇÈı½ÇĞÎ
-            // »ñÈ¡Èı½ÇĞÎÈı¸ö¶¥µãµÄ×ø±ê
+        if (npts == 3) { // å¦‚æœæ˜¯ä¸‰è§’å½¢
+            // è·å–ä¸‰è§’å½¢ä¸‰ä¸ªé¡¶ç‚¹çš„åæ ‡
             double p0[3], p1[3], p2[3];
             points->GetPoint(ptIds[0], p0);
             points->GetPoint(ptIds[1], p1);
             points->GetPoint(ptIds[2], p2);
 
-            // ¼ÆËãÈı½ÇĞÎÖØĞÄ
+            // è®¡ç®—ä¸‰è§’å½¢é‡å¿ƒ
             double centroid[3] = { (p0[0] + p1[0] + p2[0]) / 3.0,
                                    (p0[1] + p1[1] + p2[1]) / 3.0,
                                    (p0[2] + p1[2] + p2[2]) / 3.0 };
 
-            // ´æ´¢ÖØĞÄ
+            // å­˜å‚¨é‡å¿ƒ
             sampledPoints.push_back({ centroid[0], centroid[1], centroid[2] });
         }
     }
 }
 
-// ¶àÄ¿±ê¾¨ÓãÓÅ»¯Ëã·¨
+// å¤šç›®æ ‡é²¸é±¼ä¼˜åŒ–ç®—æ³•
 std::vector<std::vector<double>> WhaleOptimizationAlgorithm(vtkSmartPointer<vtkPolyData> filteredSkin, vtkSmartPointer<vtkOBBTree> obbTree, double* tumorCenter) {
-    // ¼ÙÉèÓÅ»¯µÄÖÖÈºÊıÁ¿Îª 10£¬Ã¿¸ö¾¨ÓãÓĞ 3 ¸öÎ»ÖÃ²ÎÊı (x, y, z)
+    // å‡è®¾ä¼˜åŒ–çš„ç§ç¾¤æ•°é‡ä¸º 10ï¼Œæ¯ä¸ªé²¸é±¼æœ‰ 3 ä¸ªä½ç½®å‚æ•° (x, y, z)
     int populationSize = 1;
     std::vector<Whale> population(populationSize);
-    std::vector<std::vector<double>> optimizedPoints;  // ´æ´¢ÓÅ»¯ºóµÄµã£¨ÆğÊ¼µã£©
+    std::vector<std::vector<double>> optimizedPoints;  // å­˜å‚¨ä¼˜åŒ–åçš„ç‚¹ï¼ˆèµ·å§‹ç‚¹ï¼‰
 
-    // ´ÓÉ¸Ñ¡ºóµÄÈı½ÇÃæÆ¬ÖĞ²ÉÑùµã
+    // ä»ç­›é€‰åçš„ä¸‰è§’é¢ç‰‡ä¸­é‡‡æ ·ç‚¹
     std::vector<std::vector<double>> sampledPoints;
     SamplePointsFromTriangles(filteredSkin, sampledPoints);
 
-    // ³õÊ¼»¯ÖÖÈºÎ»ÖÃ (¼´Â·¾¶µÄÆğÊ¼µãºÍÖÕÖ¹µã)
+    // åˆå§‹åŒ–ç§ç¾¤ä½ç½® (å³è·¯å¾„çš„èµ·å§‹ç‚¹å’Œç»ˆæ­¢ç‚¹)
     for (int i = 0; i < populationSize; i++) {
-        // Ëæ»úÑ¡Ôñ²ÉÑùµÄµã×÷ÎªÂ·¾¶µÄÆğÊ¼µã
+        // éšæœºé€‰æ‹©é‡‡æ ·çš„ç‚¹ä½œä¸ºè·¯å¾„çš„èµ·å§‹ç‚¹
         int startIndex = rand() % sampledPoints.size();
         int endIndex = rand() % sampledPoints.size();
 
-        // ´æ´¢Â·¾¶µÄÆğÊ¼µãºÍÖÕÖ¹µã
+        // å­˜å‚¨è·¯å¾„çš„èµ·å§‹ç‚¹å’Œç»ˆæ­¢ç‚¹
         population[i].position = { sampledPoints[startIndex][0], sampledPoints[startIndex][1], sampledPoints[startIndex][2] };
         population[i].position.push_back(sampledPoints[endIndex][0]);
         population[i].position.push_back(sampledPoints[endIndex][1]);
         population[i].position.push_back(sampledPoints[endIndex][2]);
     }
 
-    // ¶ÔÃ¿¸ö¾¨Óã½øĞĞÓÅ»¯£¨¼ÆËãÊÊÓ¦¶È£©
+    // å¯¹æ¯ä¸ªé²¸é±¼è¿›è¡Œä¼˜åŒ–ï¼ˆè®¡ç®—é€‚åº”åº¦ï¼‰
     for (int i = 0; i < populationSize; i++) {
         double pathStart[3] = { population[i].position[0], population[i].position[1], population[i].position[2] };
         double pathEnd[3] = { population[i].position[3], population[i].position[4], population[i].position[5] };
 
-        // ¼ÆËãÄ¿±ê1£ºÂ·¾¶³¤¶È×îĞ¡»¯
+        // è®¡ç®—ç›®æ ‡1ï¼šè·¯å¾„é•¿åº¦æœ€å°åŒ–
         double pathLength = CalculatePathLength(pathStart, pathEnd);
-        population[i].fitness.push_back(pathLength);  // Ä¿±ê1£ºÂ·¾¶³¤¶È×îĞ¡»¯
+        population[i].fitness.push_back(pathLength);  // ç›®æ ‡1ï¼šè·¯å¾„é•¿åº¦æœ€å°åŒ–
 
-        // ¼ÆËãÄ¿±ê2£ºÂ·¾¶Óë¹ÇÍ·/Ñª¹ÜµÄ¾àÀë×î´ó»¯
+        // è®¡ç®—ç›®æ ‡2ï¼šè·¯å¾„ä¸éª¨å¤´/è¡€ç®¡çš„è·ç¦»æœ€å¤§åŒ–
         double pathDistanceToStructure = CalculatePathDistanceToStructure(pathStart, pathEnd, obbTree);
-        population[i].fitness.push_back(-pathDistanceToStructure);  // Ä¿±ê2£º×î´ó»¯Â·¾¶ÓëÑª¹Ü¹ÇÍ·µÄ¾àÀë
+        population[i].fitness.push_back(-pathDistanceToStructure);  // ç›®æ ‡2ï¼šæœ€å¤§åŒ–è·¯å¾„ä¸è¡€ç®¡éª¨å¤´çš„è·ç¦»
 
-        // ¼ÆËãÄ¿±ê3£ºÂ·¾¶Æ½ĞĞ¶È×î´ó»¯
+        // è®¡ç®—ç›®æ ‡3ï¼šè·¯å¾„å¹³è¡Œåº¦æœ€å¤§åŒ–
         double pathAlignment = CalculatePathAlignmentWithTumorCenter(pathStart, pathEnd, tumorCenter);
-        population[i].fitness.push_back(pathAlignment);  // Ä¿±ê3£º×î´ó»¯Â·¾¶Æ½ĞĞ¶È
+        population[i].fitness.push_back(pathAlignment);  // ç›®æ ‡3ï¼šæœ€å¤§åŒ–è·¯å¾„å¹³è¡Œåº¦
     }
 
-    // ÌáÈ¡Â·¾¶µÄÆğÊ¼µãµ½½á¹ûÊı×é
+    // æå–è·¯å¾„çš„èµ·å§‹ç‚¹åˆ°ç»“æœæ•°ç»„
     for (int i = 0; i < populationSize; i++) {
         double pathStart[3] = { population[i].position[0], population[i].position[1], population[i].position[2] };
         optimizedPoints.push_back({ pathStart[0], pathStart[1], pathStart[2] });
     }
 
-    return optimizedPoints;  // ·µ»ØÓÅ»¯ºóµÄÆğµã
+    return optimizedPoints;  // è¿”å›ä¼˜åŒ–åçš„èµ·ç‚¹
 }
-// ¼ÆËãÁ½¸öµãÖ®¼äµÄ¾àÀë
+// è®¡ç®—ä¸¤ä¸ªç‚¹ä¹‹é—´çš„è·ç¦»
 double distance(double x1, double y1, double z1, double x2, double y2, double z2) {
     return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2) + pow(z2 - z1, 2));
 }
 
-// ¼ÆËãµ¥Î»·½ÏòÏòÁ¿
+// è®¡ç®—å•ä½æ–¹å‘å‘é‡
 void normalizeDirection(double& dx, double& dy, double& dz) {
     double len = sqrt(dx * dx + dy * dy + dz * dz);
     dx /= len;
@@ -443,142 +443,142 @@ int main() {
     std::string fileName2 = "D:\\Data Disk\\LW\\Data\\3Dircadb1.1\\CSV\\PKX\\tumor_cluster_3.csv";
     std::string fileName3 = "D:\\Data Disk\\LW\\Data\\3Dircadb1.1\\CSV\\PKX\\tumor_cluster_4.csv";
    
-    // ´´½¨ vtkDelimitedTextReader ¶ÁÈ¡ CSV ÎÄ¼ş
+    // åˆ›å»º vtkDelimitedTextReader è¯»å– CSV æ–‡ä»¶
     vtkSmartPointer<vtkDelimitedTextReader> reader = vtkSmartPointer<vtkDelimitedTextReader>::New();
     reader->SetFileName(fileName.c_str());
-    reader->SetHaveHeaders(true); // Èç¹û CSV ÎÄ¼şÓĞÍ·²¿ĞÅÏ¢
-    reader->SetFieldDelimiterCharacters(","); // Ê¹ÓÃ¶ººÅ×÷Îª·Ö¸ô·û
+    reader->SetHaveHeaders(true); // å¦‚æœ CSV æ–‡ä»¶æœ‰å¤´éƒ¨ä¿¡æ¯
+    reader->SetFieldDelimiterCharacters(","); // ä½¿ç”¨é€—å·ä½œä¸ºåˆ†éš”ç¬¦
     reader->Update();
     vtkSmartPointer<vtkDelimitedTextReader> reader1 = vtkSmartPointer<vtkDelimitedTextReader>::New();
     reader1->SetFileName(fileName1.c_str());
-    reader1->SetHaveHeaders(true); // Èç¹û CSV ÎÄ¼şÓĞÍ·²¿ĞÅÏ¢
-    reader1->SetFieldDelimiterCharacters(","); // Ê¹ÓÃ¶ººÅ×÷Îª·Ö¸ô·û
+    reader1->SetHaveHeaders(true); // å¦‚æœ CSV æ–‡ä»¶æœ‰å¤´éƒ¨ä¿¡æ¯
+    reader1->SetFieldDelimiterCharacters(","); // ä½¿ç”¨é€—å·ä½œä¸ºåˆ†éš”ç¬¦
     reader1->Update();
     vtkSmartPointer<vtkDelimitedTextReader> reader2 = vtkSmartPointer<vtkDelimitedTextReader>::New();
     reader2->SetFileName(fileName2.c_str());
-    reader2->SetHaveHeaders(true); // Èç¹û CSV ÎÄ¼şÓĞÍ·²¿ĞÅÏ¢
-    reader2->SetFieldDelimiterCharacters(","); // Ê¹ÓÃ¶ººÅ×÷Îª·Ö¸ô·û
+    reader2->SetHaveHeaders(true); // å¦‚æœ CSV æ–‡ä»¶æœ‰å¤´éƒ¨ä¿¡æ¯
+    reader2->SetFieldDelimiterCharacters(","); // ä½¿ç”¨é€—å·ä½œä¸ºåˆ†éš”ç¬¦
     reader2->Update();
     vtkSmartPointer<vtkDelimitedTextReader> reader3 = vtkSmartPointer<vtkDelimitedTextReader>::New();
     reader3->SetFileName(fileName3.c_str());
-    reader3->SetHaveHeaders(true); // Èç¹û CSV ÎÄ¼şÓĞÍ·²¿ĞÅÏ¢
-    reader3->SetFieldDelimiterCharacters(","); // Ê¹ÓÃ¶ººÅ×÷Îª·Ö¸ô·û
+    reader3->SetHaveHeaders(true); // å¦‚æœ CSV æ–‡ä»¶æœ‰å¤´éƒ¨ä¿¡æ¯
+    reader3->SetFieldDelimiterCharacters(","); // ä½¿ç”¨é€—å·ä½œä¸ºåˆ†éš”ç¬¦
     reader3->Update();
    
-    // ¶ÁÈ¡µÄÊı¾İ½«´æ´¢ÔÚ vtkTable ÖĞ
+    // è¯»å–çš„æ•°æ®å°†å­˜å‚¨åœ¨ vtkTable ä¸­
     vtkSmartPointer<vtkTable> table = reader->GetOutput();
     vtkSmartPointer<vtkTable> table1 = reader1->GetOutput();
     vtkSmartPointer<vtkTable> table2 = reader2->GetOutput();
     vtkSmartPointer<vtkTable> table3 = reader3->GetOutput();
    
 
-    // ´´½¨ vtkPoints À´´æ´¢ CSV ÎÄ¼şÖĞµÄµãÊı¾İ
+    // åˆ›å»º vtkPoints æ¥å­˜å‚¨ CSV æ–‡ä»¶ä¸­çš„ç‚¹æ•°æ®
     vtkSmartPointer<vtkPoints> cupoints1 = vtkSmartPointer<vtkPoints>::New();
-    // ¼ÙÉè CSV ÎÄ¼şµÄÁĞÊÇ x, y, z
+    // å‡è®¾ CSV æ–‡ä»¶çš„åˆ—æ˜¯ x, y, z
     for (vtkIdType i = 0; i < table->GetNumberOfRows(); ++i) {
-        double x = table->GetValue(i, 0).ToDouble(); // »ñÈ¡ x ×ø±ê
-        double y = table->GetValue(i, 1).ToDouble(); // »ñÈ¡ y ×ø±ê
-        double z = table->GetValue(i, 2).ToDouble(); // »ñÈ¡ z ×ø±ê
+        double x = table->GetValue(i, 0).ToDouble(); // è·å– x åæ ‡
+        double y = table->GetValue(i, 1).ToDouble(); // è·å– y åæ ‡
+        double z = table->GetValue(i, 2).ToDouble(); // è·å– z åæ ‡
 
-        // ½«µãÌí¼Óµ½ vtkPoints ÖĞ
+        // å°†ç‚¹æ·»åŠ åˆ° vtkPoints ä¸­
         cupoints1->InsertNextPoint(x, y, z);
     }
-    // ´´½¨ vtkPoints À´´æ´¢ CSV ÎÄ¼şÖĞµÄµãÊı¾İ
+    // åˆ›å»º vtkPoints æ¥å­˜å‚¨ CSV æ–‡ä»¶ä¸­çš„ç‚¹æ•°æ®
     vtkSmartPointer<vtkPoints> cupoints2 = vtkSmartPointer<vtkPoints>::New();
-    // ¼ÙÉè CSV ÎÄ¼şµÄÁĞÊÇ x, y, z
+    // å‡è®¾ CSV æ–‡ä»¶çš„åˆ—æ˜¯ x, y, z
     for (vtkIdType i = 0; i < table1->GetNumberOfRows(); ++i) {
-        double x = table1->GetValue(i, 0).ToDouble(); // »ñÈ¡ x ×ø±ê
-        double y = table1->GetValue(i, 1).ToDouble(); // »ñÈ¡ y ×ø±ê
-        double z = table1->GetValue(i, 2).ToDouble(); // »ñÈ¡ z ×ø±ê
+        double x = table1->GetValue(i, 0).ToDouble(); // è·å– x åæ ‡
+        double y = table1->GetValue(i, 1).ToDouble(); // è·å– y åæ ‡
+        double z = table1->GetValue(i, 2).ToDouble(); // è·å– z åæ ‡
 
-        // ½«µãÌí¼Óµ½ vtkPoints ÖĞ
+        // å°†ç‚¹æ·»åŠ åˆ° vtkPoints ä¸­
         cupoints2->InsertNextPoint(x, y, z);
     }
-    // ´´½¨ vtkPoints À´´æ´¢ CSV ÎÄ¼şÖĞµÄµãÊı¾İ
+    // åˆ›å»º vtkPoints æ¥å­˜å‚¨ CSV æ–‡ä»¶ä¸­çš„ç‚¹æ•°æ®
     vtkSmartPointer<vtkPoints> cupoints3 = vtkSmartPointer<vtkPoints>::New();
-    // ¼ÙÉè CSV ÎÄ¼şµÄÁĞÊÇ x, y, z
+    // å‡è®¾ CSV æ–‡ä»¶çš„åˆ—æ˜¯ x, y, z
     for (vtkIdType i = 0; i < table2->GetNumberOfRows(); ++i) {
-        double x = table2->GetValue(i, 0).ToDouble(); // »ñÈ¡ x ×ø±ê
-        double y = table2->GetValue(i, 1).ToDouble(); // »ñÈ¡ y ×ø±ê
-        double z = table2->GetValue(i, 2).ToDouble(); // »ñÈ¡ z ×ø±ê
+        double x = table2->GetValue(i, 0).ToDouble(); // è·å– x åæ ‡
+        double y = table2->GetValue(i, 1).ToDouble(); // è·å– y åæ ‡
+        double z = table2->GetValue(i, 2).ToDouble(); // è·å– z åæ ‡
 
-        // ½«µãÌí¼Óµ½ vtkPoints ÖĞ
+        // å°†ç‚¹æ·»åŠ åˆ° vtkPoints ä¸­
         cupoints3->InsertNextPoint(x, y, z);
     }
-    // ´´½¨ vtkPoints À´´æ´¢ CSV ÎÄ¼şÖĞµÄµãÊı¾İ
+    // åˆ›å»º vtkPoints æ¥å­˜å‚¨ CSV æ–‡ä»¶ä¸­çš„ç‚¹æ•°æ®
     vtkSmartPointer<vtkPoints> cupoints4 = vtkSmartPointer<vtkPoints>::New();
-    // ¼ÙÉè CSV ÎÄ¼şµÄÁĞÊÇ x, y, z
+    // å‡è®¾ CSV æ–‡ä»¶çš„åˆ—æ˜¯ x, y, z
     for (vtkIdType i = 0; i < table3->GetNumberOfRows(); ++i) {
-        double x = table3->GetValue(i, 0).ToDouble(); // »ñÈ¡ x ×ø±ê
-        double y = table3->GetValue(i, 1).ToDouble(); // »ñÈ¡ y ×ø±ê
-        double z = table3->GetValue(i, 2).ToDouble(); // »ñÈ¡ z ×ø±ê
+        double x = table3->GetValue(i, 0).ToDouble(); // è·å– x åæ ‡
+        double y = table3->GetValue(i, 1).ToDouble(); // è·å– y åæ ‡
+        double z = table3->GetValue(i, 2).ToDouble(); // è·å– z åæ ‡
 
-        // ½«µãÌí¼Óµ½ vtkPoints ÖĞ
+        // å°†ç‚¹æ·»åŠ åˆ° vtkPoints ä¸­
         cupoints4->InsertNextPoint(x, y, z);
     }
-    // 3. Ê¹ÓÃ vtkSphereSource ´´½¨ÇòÌå
+    // 3. ä½¿ç”¨ vtkSphereSource åˆ›å»ºçƒä½“
     vtkSmartPointer<vtkSphereSource> cusphereSource1 = vtkSmartPointer<vtkSphereSource>::New();
-    cusphereSource1->SetRadius(0.2);  // ÉèÖÃÇòÌåµÄ°ë¾¶
-    cusphereSource1->SetPhiResolution(10);  // ÉèÖÃ×İÏò·Ö±æÂÊ
-    cusphereSource1->SetThetaResolution(10);  // ÉèÖÃºáÏò·Ö±æÂÊ
-    cusphereSource1->Update();  // ¸üĞÂÇòÌåÔ´
+    cusphereSource1->SetRadius(0.2);  // è®¾ç½®çƒä½“çš„åŠå¾„
+    cusphereSource1->SetPhiResolution(10);  // è®¾ç½®çºµå‘åˆ†è¾¨ç‡
+    cusphereSource1->SetThetaResolution(10);  // è®¾ç½®æ¨ªå‘åˆ†è¾¨ç‡
+    cusphereSource1->Update();  // æ›´æ–°çƒä½“æº
     vtkSmartPointer<vtkSphereSource> cusphereSource2 = vtkSmartPointer<vtkSphereSource>::New();
-    cusphereSource2->SetRadius(0.2);  // ÉèÖÃÇòÌåµÄ°ë¾¶
-    cusphereSource2->SetPhiResolution(10);  // ÉèÖÃ×İÏò·Ö±æÂÊ
-    cusphereSource2->SetThetaResolution(10);  // ÉèÖÃºáÏò·Ö±æÂÊ
-    cusphereSource2->Update();  // ¸üĞÂÇòÌåÔ´
+    cusphereSource2->SetRadius(0.2);  // è®¾ç½®çƒä½“çš„åŠå¾„
+    cusphereSource2->SetPhiResolution(10);  // è®¾ç½®çºµå‘åˆ†è¾¨ç‡
+    cusphereSource2->SetThetaResolution(10);  // è®¾ç½®æ¨ªå‘åˆ†è¾¨ç‡
+    cusphereSource2->Update();  // æ›´æ–°çƒä½“æº
     vtkSmartPointer<vtkSphereSource> cusphereSource3 = vtkSmartPointer<vtkSphereSource>::New();
-    cusphereSource3->SetRadius(0.2);  // ÉèÖÃÇòÌåµÄ°ë¾¶
-    cusphereSource3->SetPhiResolution(10);  // ÉèÖÃ×İÏò·Ö±æÂÊ
-    cusphereSource3->SetThetaResolution(10);  // ÉèÖÃºáÏò·Ö±æÂÊ
-    cusphereSource3->Update();  // ¸üĞÂÇòÌåÔ´
+    cusphereSource3->SetRadius(0.2);  // è®¾ç½®çƒä½“çš„åŠå¾„
+    cusphereSource3->SetPhiResolution(10);  // è®¾ç½®çºµå‘åˆ†è¾¨ç‡
+    cusphereSource3->SetThetaResolution(10);  // è®¾ç½®æ¨ªå‘åˆ†è¾¨ç‡
+    cusphereSource3->Update();  // æ›´æ–°çƒä½“æº
     vtkSmartPointer<vtkSphereSource> cusphereSource4 = vtkSmartPointer<vtkSphereSource>::New();
-    cusphereSource4->SetRadius(0.2);  // ÉèÖÃÇòÌåµÄ°ë¾¶
-    cusphereSource4->SetPhiResolution(10);  // ÉèÖÃ×İÏò·Ö±æÂÊ
-    cusphereSource4->SetThetaResolution(10);  // ÉèÖÃºáÏò·Ö±æÂÊ
-    cusphereSource4->Update();  // ¸üĞÂÇòÌåÔ´
+    cusphereSource4->SetRadius(0.2);  // è®¾ç½®çƒä½“çš„åŠå¾„
+    cusphereSource4->SetPhiResolution(10);  // è®¾ç½®çºµå‘åˆ†è¾¨ç‡
+    cusphereSource4->SetThetaResolution(10);  // è®¾ç½®æ¨ªå‘åˆ†è¾¨ç‡
+    cusphereSource4->Update();  // æ›´æ–°çƒä½“æº
     vtkSmartPointer<vtkPolyData> cupolyData1 = vtkSmartPointer<vtkPolyData>::New();
-    cupolyData1->SetPoints(cupoints1); // ÉèÖÃµãÊı¾İ
+    cupolyData1->SetPoints(cupoints1); // è®¾ç½®ç‚¹æ•°æ®
     vtkSmartPointer<vtkPolyData> cupolyData2 = vtkSmartPointer<vtkPolyData>::New();
-    cupolyData2->SetPoints(cupoints2); // ÉèÖÃµãÊı¾İ
+    cupolyData2->SetPoints(cupoints2); // è®¾ç½®ç‚¹æ•°æ®
     vtkSmartPointer<vtkPolyData> cupolyData3 = vtkSmartPointer<vtkPolyData>::New();
-    cupolyData3->SetPoints(cupoints3); // ÉèÖÃµãÊı¾İ
+    cupolyData3->SetPoints(cupoints3); // è®¾ç½®ç‚¹æ•°æ®
     vtkSmartPointer<vtkPolyData> cupolyData4 = vtkSmartPointer<vtkPolyData>::New();
-    cupolyData4->SetPoints(cupoints4); // ÉèÖÃµãÊı¾İ
-    // 4. Ê¹ÓÃ vtkGlyph3D ½«Ã¿¸öµã×ª»»ÎªÇòÌå
+    cupolyData4->SetPoints(cupoints4); // è®¾ç½®ç‚¹æ•°æ®
+    // 4. ä½¿ç”¨ vtkGlyph3D å°†æ¯ä¸ªç‚¹è½¬æ¢ä¸ºçƒä½“
     vtkSmartPointer<vtkGlyph3D> glyph3D1 = vtkSmartPointer<vtkGlyph3D>::New();
-    glyph3D1->SetInputData(cupolyData1);  // ÊäÈëµãÊı¾İ
-    glyph3D1->SetSourceConnection(cusphereSource1->GetOutputPort());  // ÉèÖÃÇòÌåÔ´
-    glyph3D1->Update();  // ¸üĞÂÉú³ÉµÄ½á¹û
+    glyph3D1->SetInputData(cupolyData1);  // è¾“å…¥ç‚¹æ•°æ®
+    glyph3D1->SetSourceConnection(cusphereSource1->GetOutputPort());  // è®¾ç½®çƒä½“æº
+    glyph3D1->Update();  // æ›´æ–°ç”Ÿæˆçš„ç»“æœ
     vtkSmartPointer<vtkGlyph3D> glyph3D2 = vtkSmartPointer<vtkGlyph3D>::New();
-    glyph3D2->SetInputData(cupolyData2);  // ÊäÈëµãÊı¾İ
-    glyph3D2->SetSourceConnection(cusphereSource2->GetOutputPort());  // ÉèÖÃÇòÌåÔ´
-    glyph3D2->Update();  // ¸üĞÂÉú³ÉµÄ½á¹û
+    glyph3D2->SetInputData(cupolyData2);  // è¾“å…¥ç‚¹æ•°æ®
+    glyph3D2->SetSourceConnection(cusphereSource2->GetOutputPort());  // è®¾ç½®çƒä½“æº
+    glyph3D2->Update();  // æ›´æ–°ç”Ÿæˆçš„ç»“æœ
     vtkSmartPointer<vtkGlyph3D> glyph3D3 = vtkSmartPointer<vtkGlyph3D>::New();
-    glyph3D3->SetInputData(cupolyData3);  // ÊäÈëµãÊı¾İ
-    glyph3D3->SetSourceConnection(cusphereSource3->GetOutputPort());  // ÉèÖÃÇòÌåÔ´
-    glyph3D3->Update();  // ¸üĞÂÉú³ÉµÄ½á¹û
+    glyph3D3->SetInputData(cupolyData3);  // è¾“å…¥ç‚¹æ•°æ®
+    glyph3D3->SetSourceConnection(cusphereSource3->GetOutputPort());  // è®¾ç½®çƒä½“æº
+    glyph3D3->Update();  // æ›´æ–°ç”Ÿæˆçš„ç»“æœ
     vtkSmartPointer<vtkGlyph3D> glyph3D4 = vtkSmartPointer<vtkGlyph3D>::New();
-    glyph3D4->SetInputData(cupolyData4);  // ÊäÈëµãÊı¾İ
-    glyph3D4->SetSourceConnection(cusphereSource4->GetOutputPort());  // ÉèÖÃÇòÌåÔ´
-    glyph3D4->Update();  // ¸üĞÂÉú³ÉµÄ½á¹û
+    glyph3D4->SetInputData(cupolyData4);  // è¾“å…¥ç‚¹æ•°æ®
+    glyph3D4->SetSourceConnection(cusphereSource4->GetOutputPort());  // è®¾ç½®çƒä½“æº
+    glyph3D4->Update();  // æ›´æ–°ç”Ÿæˆçš„ç»“æœ
 
 
 
-     // ´´½¨Ò»¸ö Mapper À´äÖÈ¾µãÊı¾İ
+     // åˆ›å»ºä¸€ä¸ª Mapper æ¥æ¸²æŸ“ç‚¹æ•°æ®
     vtkSmartPointer<vtkPolyDataMapper> cumapper1 = vtkSmartPointer<vtkPolyDataMapper>::New();
     cumapper1->SetInputConnection(glyph3D1->GetOutputPort());
-     // ´´½¨Ò»¸ö Mapper À´äÖÈ¾µãÊı¾İ
+     // åˆ›å»ºä¸€ä¸ª Mapper æ¥æ¸²æŸ“ç‚¹æ•°æ®
     vtkSmartPointer<vtkPolyDataMapper> cumapper2 = vtkSmartPointer<vtkPolyDataMapper>::New();
     cumapper2->SetInputConnection(glyph3D2->GetOutputPort());
   
-    // ´´½¨Ò»¸ö Mapper À´äÖÈ¾µãÊı¾İ
+    // åˆ›å»ºä¸€ä¸ª Mapper æ¥æ¸²æŸ“ç‚¹æ•°æ®
     vtkSmartPointer<vtkPolyDataMapper> cumapper3 = vtkSmartPointer<vtkPolyDataMapper>::New();
     cumapper3->SetInputConnection(glyph3D3->GetOutputPort());
-    // ´´½¨Ò»¸ö Mapper À´äÖÈ¾µãÊı¾İ
+    // åˆ›å»ºä¸€ä¸ª Mapper æ¥æ¸²æŸ“ç‚¹æ•°æ®
     vtkSmartPointer<vtkPolyDataMapper> cumapper4 = vtkSmartPointer<vtkPolyDataMapper>::New();
     cumapper4->SetInputConnection(glyph3D4->GetOutputPort());
-    // ´´½¨Ò»¸ö Mapper À´äÖÈ¾µãÊı¾İ
+    // åˆ›å»ºä¸€ä¸ª Mapper æ¥æ¸²æŸ“ç‚¹æ•°æ®
 
     vtkSmartPointer<vtkPolyDataMapper> filteredSkinMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     filteredSkinMapper->SetInputData(filteredSkin);
@@ -603,10 +603,10 @@ int main() {
     vtkSmartPointer<vtkPolyDataMapper> venoussystemMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     venoussystemMapper->SetInputData(venoussystem);
 
-    // ´´½¨ÍÖÇòÌå£¨20, 15, 15 µÄÍÖÇò£©
-    double a = 29;  // ³¤Öá
-    double b = 22;  // ¶ÌÖá
-    double c = 22;  // ¶ÌÖá
+    // åˆ›å»ºæ¤­çƒä½“ï¼ˆ20, 15, 15 çš„æ¤­çƒï¼‰
+    double a = 29;  // é•¿è½´
+    double b = 22;  // çŸ­è½´
+    double c = 22;  // çŸ­è½´
     vtkSmartPointer<vtkParametricEllipsoid> ellipsoid = vtkSmartPointer<vtkParametricEllipsoid>::New();
     ellipsoid->SetXRadius(a);
     ellipsoid->SetYRadius(b);
@@ -615,15 +615,15 @@ int main() {
     vtkSmartPointer<vtkParametricFunctionSource> source = vtkSmartPointer<vtkParametricFunctionSource>::New();
     source->SetParametricFunction(ellipsoid);
     source->Update();
-    // Ê¹ÓÃÈı½Ç»¯Ëã·¨´¦ÀíÍÖÇòµÄ±íÃæ
+    // ä½¿ç”¨ä¸‰è§’åŒ–ç®—æ³•å¤„ç†æ¤­çƒçš„è¡¨é¢
     vtkSmartPointer<vtkTriangleFilter> triFilter = vtkSmartPointer<vtkTriangleFilter>::New();
     triFilter->SetInputConnection(source->GetOutputPort());
     triFilter->Update();
 
-    // ´´½¨ÍÖÇòÌåµÄÓ³ÉäÆ÷
+    // åˆ›å»ºæ¤­çƒä½“çš„æ˜ å°„å™¨
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper->SetInputConnection(triFilter->GetOutputPort());
-    // ´´½¨ÍÖÇòÌåµÄÓ³ÉäÆ÷
+    // åˆ›å»ºæ¤­çƒä½“çš„æ˜ å°„å™¨
     vtkSmartPointer<vtkPolyDataMapper> mapper2 = vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper2->SetInputConnection(triFilter->GetOutputPort());
     vtkSmartPointer<vtkPolyDataMapper> mapper3 = vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -640,92 +640,92 @@ int main() {
 
 
    
-    // ½«ÖĞĞÄ×ø±êÌí¼Óµ½ vtkPoints ÖĞ
+    // å°†ä¸­å¿ƒåæ ‡æ·»åŠ åˆ° vtkPoints ä¸­
     cu1->InsertNextPoint(tumorCenter1);
-    // ´´½¨ÍÖÇòÌåµÄ Actor£¬²¢ÉèÖÃÆäÑÕÉ«ÎªºìÉ«
+    // åˆ›å»ºæ¤­çƒä½“çš„ Actorï¼Œå¹¶è®¾ç½®å…¶é¢œè‰²ä¸ºçº¢è‰²
     vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
     actor->SetMapper(mapper);
-    actor->GetProperty()->SetColor(1, 0, 0);  // ÉèÖÃÑÕÉ«ÎªºìÉ«
-    actor->SetPosition(tumorCenter1);  // ½«ÍÖÇòÌå·ÅÖÃµ½Ö×ÁöÖÊĞÄÎ»ÖÃ
+    actor->GetProperty()->SetColor(1, 0, 0);  // è®¾ç½®é¢œè‰²ä¸ºçº¢è‰²
+    actor->SetPosition(tumorCenter1);  // å°†æ¤­çƒä½“æ”¾ç½®åˆ°è‚¿ç˜¤è´¨å¿ƒä½ç½®
     actor->GetProperty()->SetOpacity(0.8);
 
-    // ½«ÖĞĞÄ×ø±êÌí¼Óµ½ vtkPoints ÖĞ
+    // å°†ä¸­å¿ƒåæ ‡æ·»åŠ åˆ° vtkPoints ä¸­
     cu2->InsertNextPoint(tumorCenter2);
-    // ´´½¨ÍÖÇòÌåµÄ Actor£¬²¢ÉèÖÃÆäÑÕÉ«ÎªºìÉ«
+    // åˆ›å»ºæ¤­çƒä½“çš„ Actorï¼Œå¹¶è®¾ç½®å…¶é¢œè‰²ä¸ºçº¢è‰²
     vtkSmartPointer<vtkActor> actor2 = vtkSmartPointer<vtkActor>::New();
     actor2->SetMapper(mapper2);
-    actor2->GetProperty()->SetColor(1, 1, 0);  // ÉèÖÃÑÕÉ«ÎªºìÉ«
-    actor2->SetPosition(tumorCenter2);  // ½«ÍÖÇòÌå·ÅÖÃµ½Ö×ÁöÖÊĞÄÎ»ÖÃ
+    actor2->GetProperty()->SetColor(1, 1, 0);  // è®¾ç½®é¢œè‰²ä¸ºçº¢è‰²
+    actor2->SetPosition(tumorCenter2);  // å°†æ¤­çƒä½“æ”¾ç½®åˆ°è‚¿ç˜¤è´¨å¿ƒä½ç½®
     actor2->GetProperty()->SetOpacity(0.8);
-    // ½«ÖĞĞÄ×ø±êÌí¼Óµ½ vtkPoints ÖĞ
+    // å°†ä¸­å¿ƒåæ ‡æ·»åŠ åˆ° vtkPoints ä¸­
     cu3->InsertNextPoint(tumorCenter3);
-    // ´´½¨ÍÖÇòÌåµÄ Actor£¬²¢ÉèÖÃÆäÑÕÉ«ÎªºìÉ«
+    // åˆ›å»ºæ¤­çƒä½“çš„ Actorï¼Œå¹¶è®¾ç½®å…¶é¢œè‰²ä¸ºçº¢è‰²
     vtkSmartPointer<vtkActor> actor3 = vtkSmartPointer<vtkActor>::New();
     actor3->SetMapper(mapper3);
-    actor3->GetProperty()->SetColor(0, 1, 0);  // ÉèÖÃÑÕÉ«ÎªºìÉ«
-    actor3->SetPosition(tumorCenter3);  // ½«ÍÖÇòÌå·ÅÖÃµ½Ö×ÁöÖÊĞÄÎ»ÖÃ
+    actor3->GetProperty()->SetColor(0, 1, 0);  // è®¾ç½®é¢œè‰²ä¸ºçº¢è‰²
+    actor3->SetPosition(tumorCenter3);  // å°†æ¤­çƒä½“æ”¾ç½®åˆ°è‚¿ç˜¤è´¨å¿ƒä½ç½®
     actor3->GetProperty()->SetOpacity(0.8);
-    // ½«ÖĞĞÄ×ø±êÌí¼Óµ½ vtkPoints ÖĞ
+    // å°†ä¸­å¿ƒåæ ‡æ·»åŠ åˆ° vtkPoints ä¸­
     cu4->InsertNextPoint(tumorCenter4);
-    // ´´½¨ÍÖÇòÌåµÄ Actor£¬²¢ÉèÖÃÆäÑÕÉ«ÎªºìÉ«
+    // åˆ›å»ºæ¤­çƒä½“çš„ Actorï¼Œå¹¶è®¾ç½®å…¶é¢œè‰²ä¸ºçº¢è‰²
     vtkSmartPointer<vtkActor> actor4 = vtkSmartPointer<vtkActor>::New();
     actor4->SetMapper(mapper4);
-    actor4->GetProperty()->SetColor(0, 0, 1);  // ÉèÖÃÑÕÉ«ÎªºìÉ«
-    actor4->SetPosition(tumorCenter4);  // ½«ÍÖÇòÌå·ÅÖÃµ½Ö×ÁöÖÊĞÄÎ»ÖÃ
+    actor4->GetProperty()->SetColor(0, 0, 1);  // è®¾ç½®é¢œè‰²ä¸ºçº¢è‰²
+    actor4->SetPosition(tumorCenter4);  // å°†æ¤­çƒä½“æ”¾ç½®åˆ°è‚¿ç˜¤è´¨å¿ƒä½ç½®
     actor4->GetProperty()->SetOpacity(0.8);
     
-    // ´´½¨Ò»¸ö Actor À´ÏÔÊ¾µã
+    // åˆ›å»ºä¸€ä¸ª Actor æ¥æ˜¾ç¤ºç‚¹
     vtkSmartPointer<vtkActor> cuactor1 = vtkSmartPointer<vtkActor>::New();
     cuactor1->SetMapper(cumapper1);
-    cuactor1->GetProperty()->SetColor(1, 1, 0);//huangÉ«
+    cuactor1->GetProperty()->SetColor(1, 1, 0);//huangè‰²
     cuactor1->GetProperty()->SetPointSize(2.5);
-    // ´´½¨Ò»¸ö Actor À´ÏÔÊ¾µã
+    // åˆ›å»ºä¸€ä¸ª Actor æ¥æ˜¾ç¤ºç‚¹
     vtkSmartPointer<vtkActor> cuactor2 = vtkSmartPointer<vtkActor>::New();
     cuactor2->SetMapper(cumapper2);
-    cuactor2->GetProperty()->SetColor(1, 0, 0);//À¶É«
+    cuactor2->GetProperty()->SetColor(1, 0, 0);//è“è‰²
     cuactor2->GetProperty()->SetPointSize(2.5);
-    // ´´½¨Ò»¸ö Actor À´ÏÔÊ¾µã
+    // åˆ›å»ºä¸€ä¸ª Actor æ¥æ˜¾ç¤ºç‚¹
     vtkSmartPointer<vtkActor> cuactor3 = vtkSmartPointer<vtkActor>::New();
     cuactor3->SetMapper(cumapper3);
     cuactor3->GetProperty()->SetColor(0.0, 1.0, 0.0);//lv se
     cuactor3->GetProperty()->SetPointSize(2.5);
-    // ´´½¨Ò»¸ö Actor À´ÏÔÊ¾µã
+    // åˆ›å»ºä¸€ä¸ª Actor æ¥æ˜¾ç¤ºç‚¹
     vtkSmartPointer<vtkActor> cuactor4 = vtkSmartPointer<vtkActor>::New();
     cuactor4->SetMapper(cumapper4);
     cuactor4->GetProperty()->SetColor(1.0, 0.0, 0.0);//red
     cuactor4->GetProperty()->SetPointSize(2.5);
 
-    // ¹¹½¨ OBBTree À´½øĞĞÅö×²¼ì²â£¬¼ÙÉèÄãÒÑ¾­ÓĞÁË bone Êı¾İ
+    // æ„å»º OBBTree æ¥è¿›è¡Œç¢°æ’æ£€æµ‹ï¼Œå‡è®¾ä½ å·²ç»æœ‰äº† bone æ•°æ®
     vtkSmartPointer<vtkOBBTree> obbTree1 = vtkSmartPointer<vtkOBBTree>::New();
     obbTree1->SetDataSet(bone);
     obbTree1->BuildLocator();
-    // µ÷ÓÃÓÅ»¯Ëã·¨²¢»ñÈ¡ÓÅ»¯ºóµÄÆğµãÎ»ÖÃ
+    // è°ƒç”¨ä¼˜åŒ–ç®—æ³•å¹¶è·å–ä¼˜åŒ–åçš„èµ·ç‚¹ä½ç½®
     std::vector<std::vector<double>> optimizedPoints = WhaleOptimizationAlgorithm(filteredSkin4, obbTree1, tumorCenter4);
-    // ¿ÉÊÓ»¯ÓÅ»¯ºóµÄµã£¨Ö»ÏÔÊ¾Â·¾¶µÄÆğµã£©
+    // å¯è§†åŒ–ä¼˜åŒ–åçš„ç‚¹ï¼ˆåªæ˜¾ç¤ºè·¯å¾„çš„èµ·ç‚¹ï¼‰
     for (size_t i = 0; i < optimizedPoints.size(); i++) {
         double pathStart[3] = { optimizedPoints[i][0], optimizedPoints[i][1], optimizedPoints[i][2] };
 
-        // ÎªÃ¿¸öÆğµã´´½¨Ò»¸öÇòÌå
+        // ä¸ºæ¯ä¸ªèµ·ç‚¹åˆ›å»ºä¸€ä¸ªçƒä½“
         vtkSmartPointer<vtkSphereSource> GreensphereDataop = vtkSmartPointer<vtkSphereSource>::New();
         GreensphereDataop->SetCenter(pathStart[0], pathStart[1], pathStart[2]);
         std::cout << "pathStart[0]: " << pathStart[0] << std::endl;
         std::cout << "pathStart[1]: " << pathStart[1] << std::endl;
         std::cout << "pathStart[2]: " << pathStart[2] << std::endl;
 
-        GreensphereDataop-> SetRadius(0.5);  // ÉèÖÃÇòÌå°ë¾¶Îª 0.5
-            // ¼ÆËã´Ó tumorCenter4 µ½ pathStart µÄ·½ÏòÏòÁ¿
+        GreensphereDataop-> SetRadius(0.5);  // è®¾ç½®çƒä½“åŠå¾„ä¸º 0.5
+            // è®¡ç®—ä» tumorCenter4 åˆ° pathStart çš„æ–¹å‘å‘é‡
                 double dx = pathStart[0] - tumorCenter4[0];
             double dy = pathStart[1] - tumorCenter4[1];
             double dz = pathStart[2] - tumorCenter4[2];
 
-            // ½«·½ÏòÏòÁ¿µ¥Î»»¯
+            // å°†æ–¹å‘å‘é‡å•ä½åŒ–
             normalizeDirection(dx, dy, dz);
 
-            // ¼ÆËã´Ó tumorCenter4 ¿ªÊ¼£¬³¬¹ı pathStart 20 µ¥Î»µÄÉäÏßÖÕµã
+            // è®¡ç®—ä» tumorCenter4 å¼€å§‹ï¼Œè¶…è¿‡ pathStart 20 å•ä½çš„å°„çº¿ç»ˆç‚¹
             double extraLength = 50.0;
             double totalLength = distance(tumorCenter4[0], tumorCenter4[1], tumorCenter4[2], pathStart[0], pathStart[1], pathStart[2]) + extraLength;
 
-            // ¼ÆËãÉäÏßÖÕµã
+            // è®¡ç®—å°„çº¿ç»ˆç‚¹
             double rayEnd[3] = {
                 tumorCenter4[0] + dx * totalLength,
                 tumorCenter4[1] + dy * totalLength,
@@ -737,160 +737,160 @@ int main() {
                 << rayEnd[1] << ", "
                 << rayEnd[2] << ")" << std::endl;
 
-            // VTK¿ÉÊÓ»¯´úÂë
+            // VTKå¯è§†åŒ–ä»£ç 
 
-            // ´´½¨Ò»¸öµãÔ´¶ÔÏóÀ´ÉèÖÃÆğÊ¼µã
+            // åˆ›å»ºä¸€ä¸ªç‚¹æºå¯¹è±¡æ¥è®¾ç½®èµ·å§‹ç‚¹
             vtkSmartPointer<vtkPoints> Greenpoints = vtkSmartPointer<vtkPoints>::New();
-            Greenpoints->InsertNextPoint(tumorCenter4); // ÉèÖÃÆğµã (tumorCenter4)
-            Greenpoints->InsertNextPoint(rayEnd);       // ÉèÖÃÖÕµã (rayEnd)
+            Greenpoints->InsertNextPoint(tumorCenter4); // è®¾ç½®èµ·ç‚¹ (tumorCenter4)
+            Greenpoints->InsertNextPoint(rayEnd);       // è®¾ç½®ç»ˆç‚¹ (rayEnd)
 
-            // ´´½¨Ò»¸öÏßÔ´¶ÔÏó
+            // åˆ›å»ºä¸€ä¸ªçº¿æºå¯¹è±¡
             vtkSmartPointer<vtkCellArray> Greenlines = vtkSmartPointer<vtkCellArray>::New();
-            Greenlines->InsertNextCell(2); // Ò»ÌõÏßÓÉÁ½¸öµã×é³É
-            Greenlines->InsertCellPoint(0); // Æğµã
-            Greenlines->InsertCellPoint(1); // ÖÕµã
+            Greenlines->InsertNextCell(2); // ä¸€æ¡çº¿ç”±ä¸¤ä¸ªç‚¹ç»„æˆ
+            Greenlines->InsertCellPoint(0); // èµ·ç‚¹
+            Greenlines->InsertCellPoint(1); // ç»ˆç‚¹
 
-            // ´´½¨Ò»¸öPolyData¶ÔÏó
+            // åˆ›å»ºä¸€ä¸ªPolyDataå¯¹è±¡
             vtkSmartPointer<vtkPolyData> GreenlineData = vtkSmartPointer<vtkPolyData>::New();
             GreenlineData->SetPoints(Greenpoints);
             GreenlineData->SetLines(Greenlines);
-            // Ê¹ÓÃ vtkTubeFilter ´´½¨Ô²ÖùÌå
+            // ä½¿ç”¨ vtkTubeFilter åˆ›å»ºåœ†æŸ±ä½“
             vtkSmartPointer<vtkTubeFilter>GreentubeFilter = vtkSmartPointer<vtkTubeFilter>::New();
-            GreentubeFilter->SetInputData(GreenlineData);   // ÉèÖÃÏß¶ÎÊı¾İ×÷ÎªÊäÈë
-            GreentubeFilter->SetRadius(1.0);            // ÉèÖÃÔ²ÖùÌåµÄ°ë¾¶£¨Ïàµ±ÓÚ¡°Ïß¶ÎµÄ°ë¾¶¡±£©
-            GreentubeFilter->SetNumberOfSides(50);      // ÉèÖÃÔ²ÖùÌåµÄ±ßÊı£¬Ô½¶àÔ½¹â»¬
-            // ´´½¨Ò»¸öÓ³ÉäÆ÷À´ÏÔÊ¾Ïß
+            GreentubeFilter->SetInputData(GreenlineData);   // è®¾ç½®çº¿æ®µæ•°æ®ä½œä¸ºè¾“å…¥
+            GreentubeFilter->SetRadius(1.0);            // è®¾ç½®åœ†æŸ±ä½“çš„åŠå¾„ï¼ˆç›¸å½“äºâ€œçº¿æ®µçš„åŠå¾„â€ï¼‰
+            GreentubeFilter->SetNumberOfSides(50);      // è®¾ç½®åœ†æŸ±ä½“çš„è¾¹æ•°ï¼Œè¶Šå¤šè¶Šå…‰æ»‘
+            // åˆ›å»ºä¸€ä¸ªæ˜ å°„å™¨æ¥æ˜¾ç¤ºçº¿
             vtkSmartPointer<vtkPolyDataMapper> GreenlineMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
             GreenlineMapper->SetInputConnection(GreentubeFilter->GetOutputPort());
 
-            // ´´½¨Ò»¸öActorÀ´äÖÈ¾Ïß
+            // åˆ›å»ºä¸€ä¸ªActoræ¥æ¸²æŸ“çº¿
             vtkSmartPointer<vtkActor> GreenlineActor = vtkSmartPointer<vtkActor>::New();
             GreenlineActor->SetMapper(GreenlineMapper);
 
-            // ÉèÖÃÏßÌõµÄÑÕÉ«
-            GreenlineActor->GetProperty()->SetColor(0,1, 0);  // »ÆÉ«
+            // è®¾ç½®çº¿æ¡çš„é¢œè‰²
+            GreenlineActor->GetProperty()->SetColor(0,1, 0);  // é»„è‰²
             
            renderer->AddActor(GreenlineActor);//-------------------------------------------------------------------------------------------------------------------------------------
-            // ¼ÆËãÍÖÇòÌå³¤Öá£¨20£©ºÍ¶ÌÖá£¨15£©
-            double GreensemiMajorAxis = 27.0;  // ³¤Öá
-            double GreensemiMinorAxis = 24;  // ¶ÌÖá
+            // è®¡ç®—æ¤­çƒä½“é•¿è½´ï¼ˆ20ï¼‰å’ŒçŸ­è½´ï¼ˆ15ï¼‰
+            double GreensemiMajorAxis = 27.0;  // é•¿è½´
+            double GreensemiMinorAxis = 24;  // çŸ­è½´
 
-            // ´´½¨Ò»¸öÍÖÇòÌåµÄ²ÎÊı»¯º¯Êı
+            // åˆ›å»ºä¸€ä¸ªæ¤­çƒä½“çš„å‚æ•°åŒ–å‡½æ•°
             vtkSmartPointer<vtkParametricEllipsoid> Greenellipsoid = vtkSmartPointer<vtkParametricEllipsoid>::New();
-            Greenellipsoid->SetXRadius(GreensemiMinorAxis);  // ÉèÖÃ³¤Öá
-            Greenellipsoid->SetYRadius(GreensemiMinorAxis);  // ÉèÖÃ¶ÌÖá
-            Greenellipsoid->SetZRadius(GreensemiMajorAxis);  // ÉèÖÃ¶ÌÖá
+            Greenellipsoid->SetXRadius(GreensemiMinorAxis);  // è®¾ç½®é•¿è½´
+            Greenellipsoid->SetYRadius(GreensemiMinorAxis);  // è®¾ç½®çŸ­è½´
+            Greenellipsoid->SetZRadius(GreensemiMajorAxis);  // è®¾ç½®çŸ­è½´
 
-            // ´´½¨Ò»¸ö²ÎÊı»¯º¯ÊıÔ´
+            // åˆ›å»ºä¸€ä¸ªå‚æ•°åŒ–å‡½æ•°æº
             vtkSmartPointer<vtkParametricFunctionSource> GreenellipsoidSource = vtkSmartPointer<vtkParametricFunctionSource>::New();
             GreenellipsoidSource->SetParametricFunction(Greenellipsoid);
             double  M_PI = 3.14;
-            // ´´½¨ÍÖÇòÌåµÄ±ä»»
+            // åˆ›å»ºæ¤­çƒä½“çš„å˜æ¢
             vtkSmartPointer<vtkTransform> Greentransform = vtkSmartPointer<vtkTransform>::New();
-            // **Æ½ÒÆ²Ù×÷**£º½«ÍÖÇòÌåµÄÖÊĞÄ´Ó (0, 0, 0) ÒÆ¶¯µ½ tumorCenter4
+            // **å¹³ç§»æ“ä½œ**ï¼šå°†æ¤­çƒä½“çš„è´¨å¿ƒä» (0, 0, 0) ç§»åŠ¨åˆ° tumorCenter4
             Greentransform->Translate(tumorCenter4[0], tumorCenter4[1], tumorCenter4[2]);
             
-             // ´´½¨Ğı×ª¾ØÕó£¬Ä¿±êÊÇ½«ÍÖÇòÌåµÄ³¤Öá£¨Ä¬ÈÏÑØ z Öá£©Ğı×ªµ½Ä¿±ê·½Ïò£¨dx, dy, dz£©
-            double originalDirection[3] = { 0.0, 0.0, 1.0 };  // Ä¬ÈÏ³¤Öá·½Ïò
+             // åˆ›å»ºæ—‹è½¬çŸ©é˜µï¼Œç›®æ ‡æ˜¯å°†æ¤­çƒä½“çš„é•¿è½´ï¼ˆé»˜è®¤æ²¿ z è½´ï¼‰æ—‹è½¬åˆ°ç›®æ ‡æ–¹å‘ï¼ˆdx, dy, dzï¼‰
+            double originalDirection[3] = { 0.0, 0.0, 1.0 };  // é»˜è®¤é•¿è½´æ–¹å‘
             double rotationAngle = 0.0;
             double rotationAxis[3] = { 0.0, 0.0, 0.0 };
 
-            // ¼ÆËãĞı×ª½Ç¶ÈºÍĞı×ªÖá
+            // è®¡ç®—æ—‹è½¬è§’åº¦å’Œæ—‹è½¬è½´
             double dotProduct = vtkMath::Dot(originalDirection, new double[3]{ dx, dy, dz });
             double crossProduct[3];
             vtkMath::Cross(originalDirection, new double[3]{ dx, dy, dz }, crossProduct);
 
-            // Èç¹û²æ»ıÎªÁã£¬±íÊ¾Á½¸öÏòÁ¿ÒÑ¾­ÖØºÏ£¬ÎŞĞèĞı×ª
+            // å¦‚æœå‰ç§¯ä¸ºé›¶ï¼Œè¡¨ç¤ºä¸¤ä¸ªå‘é‡å·²ç»é‡åˆï¼Œæ— éœ€æ—‹è½¬
             if (vtkMath::Norm(crossProduct) < 1e-6) {
-                // Èç¹ûÃ»ÓĞĞı×ª£¨Á½¸öÏòÁ¿ÖØºÏ£©£¬ÔòÎŞĞè×öĞı×ª
+                // å¦‚æœæ²¡æœ‰æ—‹è½¬ï¼ˆä¸¤ä¸ªå‘é‡é‡åˆï¼‰ï¼Œåˆ™æ— éœ€åšæ—‹è½¬
                 std::cout << "No rotation needed. Vectors are already aligned." << std::endl;
                 rotationAngle = 0.0;
             }
             else {
-                rotationAngle = acos(dotProduct);  // ¼ÆËã¼Ğ½Ç
-                vtkMath::Normalize(crossProduct);  // ¹éÒ»»¯Ğı×ªÖá
+                rotationAngle = acos(dotProduct);  // è®¡ç®—å¤¹è§’
+                vtkMath::Normalize(crossProduct);  // å½’ä¸€åŒ–æ—‹è½¬è½´
                 std::cout << "Rotation Axis: (" << crossProduct[0] << ", " << crossProduct[1] << ", " << crossProduct[2] << ")" << std::endl;
             }
 
-            // Ğı×ªÍÖÇòÌåµ½Ä¿±ê·½Ïò
+            // æ—‹è½¬æ¤­çƒä½“åˆ°ç›®æ ‡æ–¹å‘
             Greentransform->RotateWXYZ(rotationAngle * 180.0 / M_PI, crossProduct[0], crossProduct[1], crossProduct[2]);
-            // ´´½¨Ò»¸ö±ä»»¹ıÂËÆ÷À´Ó¦ÓÃ±ä»»
+            // åˆ›å»ºä¸€ä¸ªå˜æ¢è¿‡æ»¤å™¨æ¥åº”ç”¨å˜æ¢
             vtkSmartPointer<vtkTransformPolyDataFilter> GreentransformFilter = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
             GreentransformFilter->SetInputConnection(GreenellipsoidSource->GetOutputPort());
             GreentransformFilter->SetTransform(Greentransform);
 
-            // ´´½¨Ò»¸öÓ³ÉäÆ÷
+            // åˆ›å»ºä¸€ä¸ªæ˜ å°„å™¨
             vtkSmartPointer<vtkPolyDataMapper> Greenmapper = vtkSmartPointer<vtkPolyDataMapper>::New();
             Greenmapper->SetInputConnection(GreentransformFilter->GetOutputPort());
 
-            // ´´½¨Ò»¸öActor
+            // åˆ›å»ºä¸€ä¸ªActor
             vtkSmartPointer<vtkActor> Greenactor = vtkSmartPointer<vtkActor>::New();
             Greenactor->SetMapper(Greenmapper);
             Greenactor->GetProperty()->SetOpacity(0.9);
        
-            // ÉèÖÃÑÕÉ«
-            Greenactor->GetProperty()->SetColor(0.0, 1.0, 0.0);  // ÂÌÉ«  ¶ÔÓ¦µÄÊÇcuactor3
+            // è®¾ç½®é¢œè‰²
+            Greenactor->GetProperty()->SetColor(0.0, 1.0, 0.0);  // ç»¿è‰²  å¯¹åº”çš„æ˜¯cuactor3
           renderer->AddActor(Greenactor);//----------------------------------------------------------------------------------------------------------------------------------------------
-        // ´´½¨Ó³ÉäÆ÷²¢½«ÇòÌåÌí¼Óµ½äÖÈ¾Æ÷ÖĞ
+        // åˆ›å»ºæ˜ å°„å™¨å¹¶å°†çƒä½“æ·»åŠ åˆ°æ¸²æŸ“å™¨ä¸­
         vtkSmartPointer<vtkPolyDataMapper> sphereMapperop = vtkSmartPointer<vtkPolyDataMapper>::New();
         sphereMapperop->SetInputConnection(GreensphereDataop->GetOutputPort());
 
         vtkSmartPointer<vtkActor> sphereActorop = vtkSmartPointer<vtkActor>::New();
         sphereActorop->SetMapper(sphereMapperop);
-        sphereActorop->GetProperty()->SetColor(139 / 255.0, 139 / 255.0, 0);//»ÆÉ«
-        // ½«ÇòÌåÌí¼Óµ½äÖÈ¾Æ÷ÖĞ
+        sphereActorop->GetProperty()->SetColor(139 / 255.0, 139 / 255.0, 0);//é»„è‰²
+        // å°†çƒä½“æ·»åŠ åˆ°æ¸²æŸ“å™¨ä¸­
         //renderer->AddActor(sphereActorop);
 
-        // ´´½¨²¢¿ÉÊÓ»¯ÓÅ»¯µãÓëÖ×ÁöÖÊĞÄÖ®¼äµÄÁ¬Ïß
+        // åˆ›å»ºå¹¶å¯è§†åŒ–ä¼˜åŒ–ç‚¹ä¸è‚¿ç˜¤è´¨å¿ƒä¹‹é—´çš„è¿çº¿
         vtkSmartPointer<vtkLineSource> lineSourceop = vtkSmartPointer<vtkLineSource>::New();
-        lineSourceop->SetPoint1(pathStart[0], pathStart[1], pathStart[2]);  // Æğµã
-        lineSourceop->SetPoint2(tumorCenter4[0], tumorCenter4[1], tumorCenter4[2]);  // Ö×ÁöÖÊĞÄ
-         // Ê¹ÓÃ TubeFilter Ôö¼ÓÏß¶ÎµÄ°ë¾¶
+        lineSourceop->SetPoint1(pathStart[0], pathStart[1], pathStart[2]);  // èµ·ç‚¹
+        lineSourceop->SetPoint2(tumorCenter4[0], tumorCenter4[1], tumorCenter4[2]);  // è‚¿ç˜¤è´¨å¿ƒ
+         // ä½¿ç”¨ TubeFilter å¢åŠ çº¿æ®µçš„åŠå¾„
         vtkSmartPointer<vtkTubeFilter> tubeFilterop = vtkSmartPointer<vtkTubeFilter>::New();
         tubeFilterop->SetInputConnection(lineSourceop->GetOutputPort());
-        tubeFilterop->SetRadius(0.5);  // ÉèÖÃÏß¶Î°ë¾¶
-        tubeFilterop->SetNumberOfSides(20);  // ÉèÖÃÏß¶ÎµÄ¾«¶È
+        tubeFilterop->SetRadius(0.5);  // è®¾ç½®çº¿æ®µåŠå¾„
+        tubeFilterop->SetNumberOfSides(20);  // è®¾ç½®çº¿æ®µçš„ç²¾åº¦
         tubeFilterop->Update();
-        // ´´½¨Ó³ÉäÆ÷²¢½«ÏßÌí¼Óµ½äÖÈ¾Æ÷ÖĞ
+        // åˆ›å»ºæ˜ å°„å™¨å¹¶å°†çº¿æ·»åŠ åˆ°æ¸²æŸ“å™¨ä¸­
         vtkSmartPointer<vtkPolyDataMapper> lineMapperop = vtkSmartPointer<vtkPolyDataMapper>::New();
         lineMapperop->SetInputConnection(tubeFilterop->GetOutputPort());
 
         vtkSmartPointer<vtkActor> lineActorop = vtkSmartPointer<vtkActor>::New();
         lineActorop->SetMapper(lineMapperop);
-        lineActorop->GetProperty()->SetColor(139 / 255.0, 139 / 255.0, 0);  // ÉèÖÃÏßµÄÑÕÉ«Îª»ÆÉ«
+        lineActorop->GetProperty()->SetColor(139 / 255.0, 139 / 255.0, 0);  // è®¾ç½®çº¿çš„é¢œè‰²ä¸ºé»„è‰²
 
-        // ½«ÏßÌí¼Óµ½äÖÈ¾Æ÷ÖĞ
+        // å°†çº¿æ·»åŠ åˆ°æ¸²æŸ“å™¨ä¸­
        // renderer->AddActor(lineActorop);
     }
-    // ¹¹½¨ OBBTree À´½øĞĞÅö×²¼ì²â£¬¼ÙÉèÄãÒÑ¾­ÓĞÁË bone Êı¾İ
+    // æ„å»º OBBTree æ¥è¿›è¡Œç¢°æ’æ£€æµ‹ï¼Œå‡è®¾ä½ å·²ç»æœ‰äº† bone æ•°æ®
     vtkSmartPointer<vtkOBBTree> obbTree2 = vtkSmartPointer<vtkOBBTree>::New();
     obbTree2->SetDataSet(bone);
     obbTree2->BuildLocator();
-    // µ÷ÓÃÓÅ»¯Ëã·¨²¢»ñÈ¡ÓÅ»¯ºóµÄÆğµãÎ»ÖÃ
+    // è°ƒç”¨ä¼˜åŒ–ç®—æ³•å¹¶è·å–ä¼˜åŒ–åçš„èµ·ç‚¹ä½ç½®
     std::vector<std::vector<double>> optimizedPoints1 = WhaleOptimizationAlgorithm(filteredSkin3, obbTree2, tumorCenter3);
-    // ¿ÉÊÓ»¯ÓÅ»¯ºóµÄµã£¨Ö»ÏÔÊ¾Â·¾¶µÄÆğµã£©
+    // å¯è§†åŒ–ä¼˜åŒ–åçš„ç‚¹ï¼ˆåªæ˜¾ç¤ºè·¯å¾„çš„èµ·ç‚¹ï¼‰
     for (size_t i = 0; i < optimizedPoints1.size(); i++) {
         double pathStart1[3] = { optimizedPoints1[i][0], optimizedPoints1[i][1], optimizedPoints1[i][2] };
 
-        // ÎªÃ¿¸öÆğµã´´½¨Ò»¸öÇòÌå
+        // ä¸ºæ¯ä¸ªèµ·ç‚¹åˆ›å»ºä¸€ä¸ªçƒä½“
         vtkSmartPointer<vtkSphereSource> yellowsphereDataop1 = vtkSmartPointer<vtkSphereSource>::New();
         yellowsphereDataop1->SetCenter(pathStart1[0], pathStart1[1], pathStart1[2]);
-        yellowsphereDataop1->SetRadius(0.5);  // ÉèÖÃÇòÌå°ë¾¶Îª 0.5
-         // ´´½¨Ò»¸öµãÔ´¶ÔÏóÀ´ÉèÖÃÆğÊ¼µã
+        yellowsphereDataop1->SetRadius(0.5);  // è®¾ç½®çƒä½“åŠå¾„ä¸º 0.5
+         // åˆ›å»ºä¸€ä¸ªç‚¹æºå¯¹è±¡æ¥è®¾ç½®èµ·å§‹ç‚¹
       
-           // ¼ÆËã´Ó tumorCenter4 µ½ pathStart µÄ·½ÏòÏòÁ¿
+           // è®¡ç®—ä» tumorCenter4 åˆ° pathStart çš„æ–¹å‘å‘é‡
         double dx1 = pathStart1[0] +10 - tumorCenter3[0];
         double dy1 = pathStart1[1] - tumorCenter3[1];
         double dz1 = pathStart1[2] + 20 - tumorCenter3[2];
 
-        // ½«·½ÏòÏòÁ¿µ¥Î»»¯
+        // å°†æ–¹å‘å‘é‡å•ä½åŒ–
         normalizeDirection(dx1, dy1, dz1);
 
-        // ¼ÆËã´Ó tumorCenter4 ¿ªÊ¼£¬³¬¹ı pathStart 20 µ¥Î»µÄÉäÏßÖÕµã
+        // è®¡ç®—ä» tumorCenter4 å¼€å§‹ï¼Œè¶…è¿‡ pathStart 20 å•ä½çš„å°„çº¿ç»ˆç‚¹
         double extraLength = 50.0;
         double totalLength = distance(tumorCenter3[0], tumorCenter3[1], tumorCenter3[2], pathStart1[0], pathStart1[1], pathStart1[2]) + extraLength;
 
-        // ¼ÆËãÉäÏßÖÕµã
+        // è®¡ç®—å°„çº¿ç»ˆç‚¹
         double rayEnd[3] = {
             tumorCenter3[0] + dx1 * totalLength,
             tumorCenter3[1] + dy1 * totalLength,
@@ -898,210 +898,210 @@ int main() {
         };
 
         vtkSmartPointer<vtkPoints> yellowpoints = vtkSmartPointer<vtkPoints>::New();
-        yellowpoints->InsertNextPoint(tumorCenter3); // ÉèÖÃÆğµã (tumorCenter4)
-        yellowpoints->InsertNextPoint(rayEnd);       // ÉèÖÃÖÕµã (rayEnd)
+        yellowpoints->InsertNextPoint(tumorCenter3); // è®¾ç½®èµ·ç‚¹ (tumorCenter4)
+        yellowpoints->InsertNextPoint(rayEnd);       // è®¾ç½®ç»ˆç‚¹ (rayEnd)
 
-        // ´´½¨Ò»¸öÏßÔ´¶ÔÏó
+        // åˆ›å»ºä¸€ä¸ªçº¿æºå¯¹è±¡
         vtkSmartPointer<vtkCellArray> yellowlines = vtkSmartPointer<vtkCellArray>::New();
-        yellowlines->InsertNextCell(2); // Ò»ÌõÏßÓÉÁ½¸öµã×é³É
-        yellowlines->InsertCellPoint(0); // Æğµã
-        yellowlines->InsertCellPoint(1); // ÖÕµã
+        yellowlines->InsertNextCell(2); // ä¸€æ¡çº¿ç”±ä¸¤ä¸ªç‚¹ç»„æˆ
+        yellowlines->InsertCellPoint(0); // èµ·ç‚¹
+        yellowlines->InsertCellPoint(1); // ç»ˆç‚¹
 
-        // ´´½¨Ò»¸öPolyData¶ÔÏó
+        // åˆ›å»ºä¸€ä¸ªPolyDataå¯¹è±¡
         vtkSmartPointer<vtkPolyData> yellowlineData = vtkSmartPointer<vtkPolyData>::New();
         yellowlineData->SetPoints(yellowpoints);
         yellowlineData->SetLines(yellowlines);
-        // Ê¹ÓÃ vtkTubeFilter ´´½¨Ô²ÖùÌå
+        // ä½¿ç”¨ vtkTubeFilter åˆ›å»ºåœ†æŸ±ä½“
         vtkSmartPointer<vtkTubeFilter>yellowtubeFilter = vtkSmartPointer<vtkTubeFilter>::New();
-        yellowtubeFilter->SetInputData(yellowlineData);   // ÉèÖÃÏß¶ÎÊı¾İ×÷ÎªÊäÈë
-        yellowtubeFilter->SetRadius(1.0);            // ÉèÖÃÔ²ÖùÌåµÄ°ë¾¶£¨Ïàµ±ÓÚ¡°Ïß¶ÎµÄ°ë¾¶¡±£©
-        yellowtubeFilter->SetNumberOfSides(50);      // ÉèÖÃÔ²ÖùÌåµÄ±ßÊı£¬Ô½¶àÔ½¹â»¬
-        // ´´½¨Ò»¸öÓ³ÉäÆ÷À´ÏÔÊ¾Ïß
+        yellowtubeFilter->SetInputData(yellowlineData);   // è®¾ç½®çº¿æ®µæ•°æ®ä½œä¸ºè¾“å…¥
+        yellowtubeFilter->SetRadius(1.0);            // è®¾ç½®åœ†æŸ±ä½“çš„åŠå¾„ï¼ˆç›¸å½“äºâ€œçº¿æ®µçš„åŠå¾„â€ï¼‰
+        yellowtubeFilter->SetNumberOfSides(50);      // è®¾ç½®åœ†æŸ±ä½“çš„è¾¹æ•°ï¼Œè¶Šå¤šè¶Šå…‰æ»‘
+        // åˆ›å»ºä¸€ä¸ªæ˜ å°„å™¨æ¥æ˜¾ç¤ºçº¿
         vtkSmartPointer<vtkPolyDataMapper> yellowlineMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
         yellowlineMapper->SetInputConnection(yellowtubeFilter->GetOutputPort());
 
-        // ´´½¨Ò»¸öActorÀ´äÖÈ¾Ïß
+        // åˆ›å»ºä¸€ä¸ªActoræ¥æ¸²æŸ“çº¿
         vtkSmartPointer<vtkActor> yellowlineActor = vtkSmartPointer<vtkActor>::New();
         yellowlineActor->SetMapper(yellowlineMapper);
 
-        // ÉèÖÃÏßÌõµÄÑÕÉ«
-        yellowlineActor->GetProperty()->SetColor(1, 1, 0);  // »ÆÉ«
+        // è®¾ç½®çº¿æ¡çš„é¢œè‰²
+        yellowlineActor->GetProperty()->SetColor(1, 1, 0);  // é»„è‰²
 
       renderer->AddActor(yellowlineActor);//-------------------------------------------------------------------------------------------------------------------------------------------------
-        // ¼ÆËãÍÖÇòÌå³¤Öá£¨20£©ºÍ¶ÌÖá£¨15£©
-        double yellowsemiMajorAxis = 25.0;  // ³¤Öá
-        double yellowsemiMinorAxis = 22;  // ¶ÌÖá
-        double yellowsemiMajorAxis1   = 25.0;  // ³¤Öá
-        double yellowsemiMinorAxis1  = 22;  // ¶ÌÖá
+        // è®¡ç®—æ¤­çƒä½“é•¿è½´ï¼ˆ20ï¼‰å’ŒçŸ­è½´ï¼ˆ15ï¼‰
+        double yellowsemiMajorAxis = 25.0;  // é•¿è½´
+        double yellowsemiMinorAxis = 22;  // çŸ­è½´
+        double yellowsemiMajorAxis1   = 25.0;  // é•¿è½´
+        double yellowsemiMinorAxis1  = 22;  // çŸ­è½´
 
-        // ´´½¨Ò»¸öÍÖÇòÌåµÄ²ÎÊı»¯º¯Êı
+        // åˆ›å»ºä¸€ä¸ªæ¤­çƒä½“çš„å‚æ•°åŒ–å‡½æ•°
         vtkSmartPointer<vtkParametricEllipsoid> yellowellipsoid = vtkSmartPointer<vtkParametricEllipsoid>::New();
-        yellowellipsoid->SetXRadius(yellowsemiMinorAxis);  // ÉèÖÃ³¤Öá
-        yellowellipsoid->SetYRadius(yellowsemiMinorAxis);  // ÉèÖÃ¶ÌÖá
-        yellowellipsoid->SetZRadius(yellowsemiMajorAxis);  // ÉèÖÃ¶ÌÖá
-         // ´´½¨Ò»¸öÍÖÇòÌåµÄ²ÎÊı»¯º¯Êı
+        yellowellipsoid->SetXRadius(yellowsemiMinorAxis);  // è®¾ç½®é•¿è½´
+        yellowellipsoid->SetYRadius(yellowsemiMinorAxis);  // è®¾ç½®çŸ­è½´
+        yellowellipsoid->SetZRadius(yellowsemiMajorAxis);  // è®¾ç½®çŸ­è½´
+         // åˆ›å»ºä¸€ä¸ªæ¤­çƒä½“çš„å‚æ•°åŒ–å‡½æ•°
         vtkSmartPointer<vtkParametricEllipsoid> yellowellipsoid1 = vtkSmartPointer<vtkParametricEllipsoid>::New();
-        yellowellipsoid1->SetXRadius(yellowsemiMinorAxis1);  // ÉèÖÃ³¤Öá
-        yellowellipsoid1->SetYRadius(yellowsemiMinorAxis1);  // ÉèÖÃ¶ÌÖá
-        yellowellipsoid1->SetZRadius(yellowsemiMajorAxis1);  // ÉèÖÃ¶ÌÖá
+        yellowellipsoid1->SetXRadius(yellowsemiMinorAxis1);  // è®¾ç½®é•¿è½´
+        yellowellipsoid1->SetYRadius(yellowsemiMinorAxis1);  // è®¾ç½®çŸ­è½´
+        yellowellipsoid1->SetZRadius(yellowsemiMajorAxis1);  // è®¾ç½®çŸ­è½´
 
-        // ´´½¨Ò»¸ö²ÎÊı»¯º¯ÊıÔ´
+        // åˆ›å»ºä¸€ä¸ªå‚æ•°åŒ–å‡½æ•°æº
         vtkSmartPointer<vtkParametricFunctionSource> yellowellipsoidSource = vtkSmartPointer<vtkParametricFunctionSource>::New();
         yellowellipsoidSource->SetParametricFunction(yellowellipsoid);
-        // ´´½¨Ò»¸ö²ÎÊı»¯º¯ÊıÔ´
+        // åˆ›å»ºä¸€ä¸ªå‚æ•°åŒ–å‡½æ•°æº
         vtkSmartPointer<vtkParametricFunctionSource> yellowellipsoidSource1 = vtkSmartPointer<vtkParametricFunctionSource>::New();
         yellowellipsoidSource1->SetParametricFunction(yellowellipsoid1);
         double  M_PI = 3.14;
-        // ´´½¨ÍÖÇòÌåµÄ±ä»»
+        // åˆ›å»ºæ¤­çƒä½“çš„å˜æ¢
         vtkSmartPointer<vtkTransform> yellowtransform = vtkSmartPointer<vtkTransform>::New();
         vtkSmartPointer<vtkTransform> yellowtransform1 = vtkSmartPointer<vtkTransform>::New();
-        // **Æ½ÒÆ²Ù×÷**£º½«ÍÖÇòÌåµÄÖÊĞÄ´Ó (0, 0, 0) ÒÆ¶¯µ½ tumorCenter4
+        // **å¹³ç§»æ“ä½œ**ï¼šå°†æ¤­çƒä½“çš„è´¨å¿ƒä» (0, 0, 0) ç§»åŠ¨åˆ° tumorCenter4
         yellowtransform->Translate(tumorCenter3[0], tumorCenter3[1], tumorCenter3[2]);
         yellowtransform1->Translate(tumorCenter1[0]-5, tumorCenter1[1]-5, tumorCenter1[2]-5);
-        // ´´½¨Ğı×ª¾ØÕó£¬Ä¿±êÊÇ½«ÍÖÇòÌåµÄ³¤Öá£¨Ä¬ÈÏÑØ z Öá£©Ğı×ªµ½Ä¿±ê·½Ïò£¨dx, dy, dz£©
-        double originalDirection1[3] = { 0.0, 0.0, 1.0 };  // Ä¬ÈÏ³¤Öá·½Ïò
+        // åˆ›å»ºæ—‹è½¬çŸ©é˜µï¼Œç›®æ ‡æ˜¯å°†æ¤­çƒä½“çš„é•¿è½´ï¼ˆé»˜è®¤æ²¿ z è½´ï¼‰æ—‹è½¬åˆ°ç›®æ ‡æ–¹å‘ï¼ˆdx, dy, dzï¼‰
+        double originalDirection1[3] = { 0.0, 0.0, 1.0 };  // é»˜è®¤é•¿è½´æ–¹å‘
         double rotationAngle1 = 0.0;
         double rotationAxis1[3] = { 0.0, 0.0, 0.0 };
 
-        // ¼ÆËãĞı×ª½Ç¶ÈºÍĞı×ªÖá
+        // è®¡ç®—æ—‹è½¬è§’åº¦å’Œæ—‹è½¬è½´
         double dotProduct1 = vtkMath::Dot(originalDirection1, new double[3]{ dx1, dy1, dz1 });
         double crossProduct1[3];
         vtkMath::Cross(originalDirection1, new double[3]{ dx1, dy1, dz1 }, crossProduct1);
 
-        // Èç¹û²æ»ıÎªÁã£¬±íÊ¾Á½¸öÏòÁ¿ÒÑ¾­ÖØºÏ£¬ÎŞĞèĞı×ª
+        // å¦‚æœå‰ç§¯ä¸ºé›¶ï¼Œè¡¨ç¤ºä¸¤ä¸ªå‘é‡å·²ç»é‡åˆï¼Œæ— éœ€æ—‹è½¬
         if (vtkMath::Norm(crossProduct1) < 1e-6) {
-            // Èç¹ûÃ»ÓĞĞı×ª£¨Á½¸öÏòÁ¿ÖØºÏ£©£¬ÔòÎŞĞè×öĞı×ª
+            // å¦‚æœæ²¡æœ‰æ—‹è½¬ï¼ˆä¸¤ä¸ªå‘é‡é‡åˆï¼‰ï¼Œåˆ™æ— éœ€åšæ—‹è½¬
             std::cout << "No rotation needed. Vectors are already aligned." << std::endl;
             rotationAngle1 = 0.0;
         }
         else {
-            rotationAngle1 = acos(dotProduct1);  // ¼ÆËã¼Ğ½Ç
-            vtkMath::Normalize(crossProduct1);  // ¹éÒ»»¯Ğı×ªÖá
+            rotationAngle1 = acos(dotProduct1);  // è®¡ç®—å¤¹è§’
+            vtkMath::Normalize(crossProduct1);  // å½’ä¸€åŒ–æ—‹è½¬è½´
             std::cout << "Rotation Axis: (" << crossProduct1[0] << ", " << crossProduct1[1] << ", " << crossProduct1[2] << ")" << std::endl;
         }
 
-        // Ğı×ªÍÖÇòÌåµ½Ä¿±ê·½Ïò
+        // æ—‹è½¬æ¤­çƒä½“åˆ°ç›®æ ‡æ–¹å‘
         yellowtransform->RotateWXYZ(rotationAngle1 * 180.0 / M_PI, crossProduct1[0], crossProduct1[1], crossProduct1[2]);
 
-        // ´´½¨Ğı×ª¾ØÕó£¬Ä¿±êÊÇ½«ÍÖÇòÌåµÄ³¤Öá£¨Ä¬ÈÏÑØ z Öá£©Ğı×ªµ½Ä¿±ê·½Ïò£¨dx, dy, dz£©
-        double originalDirection11[3] = { 0.0, 0.0, 1.0 };  // Ä¬ÈÏ³¤Öá·½Ïò
+        // åˆ›å»ºæ—‹è½¬çŸ©é˜µï¼Œç›®æ ‡æ˜¯å°†æ¤­çƒä½“çš„é•¿è½´ï¼ˆé»˜è®¤æ²¿ z è½´ï¼‰æ—‹è½¬åˆ°ç›®æ ‡æ–¹å‘ï¼ˆdx, dy, dzï¼‰
+        double originalDirection11[3] = { 0.0, 0.0, 1.0 };  // é»˜è®¤é•¿è½´æ–¹å‘
         double rotationAngle11 = 0.0;
         double rotationAxis11[3] = { 0.0, 0.0, 0.0 };
 
-        // ¼ÆËãĞı×ª½Ç¶ÈºÍĞı×ªÖá
+        // è®¡ç®—æ—‹è½¬è§’åº¦å’Œæ—‹è½¬è½´
         double dotProduct11 = vtkMath::Dot(originalDirection11, new double[3]{ dx1, dy1, dz1 });
         double crossProduct11[3];
         vtkMath::Cross(originalDirection11, new double[3]{ dx1, dy1, dz1 }, crossProduct11);
 
-        // Èç¹û²æ»ıÎªÁã£¬±íÊ¾Á½¸öÏòÁ¿ÒÑ¾­ÖØºÏ£¬ÎŞĞèĞı×ª
+        // å¦‚æœå‰ç§¯ä¸ºé›¶ï¼Œè¡¨ç¤ºä¸¤ä¸ªå‘é‡å·²ç»é‡åˆï¼Œæ— éœ€æ—‹è½¬
         if (vtkMath::Norm(crossProduct11) < 1e-6) {
-            // Èç¹ûÃ»ÓĞĞı×ª£¨Á½¸öÏòÁ¿ÖØºÏ£©£¬ÔòÎŞĞè×öĞı×ª
+            // å¦‚æœæ²¡æœ‰æ—‹è½¬ï¼ˆä¸¤ä¸ªå‘é‡é‡åˆï¼‰ï¼Œåˆ™æ— éœ€åšæ—‹è½¬
             std::cout << "No rotation needed. Vectors are already aligned." << std::endl;
             rotationAngle11 = 0.0;
         }
         else {
-            rotationAngle11 = acos(dotProduct11);  // ¼ÆËã¼Ğ½Ç
-            vtkMath::Normalize(crossProduct11);  // ¹éÒ»»¯Ğı×ªÖá
+            rotationAngle11 = acos(dotProduct11);  // è®¡ç®—å¤¹è§’
+            vtkMath::Normalize(crossProduct11);  // å½’ä¸€åŒ–æ—‹è½¬è½´
             std::cout << "Rotation Axis: (" << crossProduct11[0] << ", " << crossProduct11[1] << ", " << crossProduct11[2] << ")" << std::endl;
         }
 
-        // Ğı×ªÍÖÇòÌåµ½Ä¿±ê·½Ïò
+        // æ—‹è½¬æ¤­çƒä½“åˆ°ç›®æ ‡æ–¹å‘
         yellowtransform1->RotateWXYZ(rotationAngle11 * 180.0 / M_PI, crossProduct11[0], crossProduct11[1], crossProduct11[2]);
 
 
-        // ´´½¨Ò»¸ö±ä»»¹ıÂËÆ÷À´Ó¦ÓÃ±ä»»
+        // åˆ›å»ºä¸€ä¸ªå˜æ¢è¿‡æ»¤å™¨æ¥åº”ç”¨å˜æ¢
         vtkSmartPointer<vtkTransformPolyDataFilter> yellowtransformFilter = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
         yellowtransformFilter->SetInputConnection(yellowellipsoidSource->GetOutputPort());
         yellowtransformFilter->SetTransform(yellowtransform);
 
-        // ´´½¨Ò»¸öÓ³ÉäÆ÷
+        // åˆ›å»ºä¸€ä¸ªæ˜ å°„å™¨
         vtkSmartPointer<vtkPolyDataMapper> yellowmapper = vtkSmartPointer<vtkPolyDataMapper>::New();
         yellowmapper->SetInputConnection(yellowtransformFilter->GetOutputPort());
 
-        // ´´½¨Ò»¸öActor
+        // åˆ›å»ºä¸€ä¸ªActor
         vtkSmartPointer<vtkActor> yellowactor = vtkSmartPointer<vtkActor>::New();
         yellowactor->SetMapper(yellowmapper);
         yellowactor->GetProperty()->SetOpacity(0.9);
 
-        // ÉèÖÃÑÕÉ«
+        // è®¾ç½®é¢œè‰²
         yellowactor->GetProperty()->SetColor(1.0, 1.0, 0.0);  //  cuactor1
         renderer->AddActor(yellowactor);//--------------------------------------------------------------------------------------------------------------------------
-        // ´´½¨Ò»¸ö±ä»»¹ıÂËÆ÷À´Ó¦ÓÃ±ä»»
+        // åˆ›å»ºä¸€ä¸ªå˜æ¢è¿‡æ»¤å™¨æ¥åº”ç”¨å˜æ¢
         vtkSmartPointer<vtkTransformPolyDataFilter> yellowtransformFilter1 = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
         yellowtransformFilter1->SetInputConnection(yellowellipsoidSource1->GetOutputPort());
         yellowtransformFilter1->SetTransform(yellowtransform1);
 
-        // ´´½¨Ò»¸öÓ³ÉäÆ÷
+        // åˆ›å»ºä¸€ä¸ªæ˜ å°„å™¨
         vtkSmartPointer<vtkPolyDataMapper> yellowmapper1 = vtkSmartPointer<vtkPolyDataMapper>::New();
         yellowmapper1->SetInputConnection(yellowtransformFilter1->GetOutputPort());
 
-        // ´´½¨Ò»¸öActor
+        // åˆ›å»ºä¸€ä¸ªActor
         vtkSmartPointer<vtkActor> yellowactor1 = vtkSmartPointer<vtkActor>::New();
         yellowactor1->SetMapper(yellowmapper1);
         yellowactor1->GetProperty()->SetOpacity(0.9);
 
-        // ÉèÖÃÑÕÉ«
+        // è®¾ç½®é¢œè‰²
         yellowactor1->GetProperty()->SetColor(1.0, 1.0, 0.0);  //  cuactor1
        renderer->AddActor(yellowactor1);//-----------------------------------------------------------------------------------------------------------------------------
-        // ´´½¨Ó³ÉäÆ÷²¢½«ÇòÌåÌí¼Óµ½äÖÈ¾Æ÷ÖĞ
+        // åˆ›å»ºæ˜ å°„å™¨å¹¶å°†çƒä½“æ·»åŠ åˆ°æ¸²æŸ“å™¨ä¸­
         vtkSmartPointer<vtkPolyDataMapper> sphereMapperop1 = vtkSmartPointer<vtkPolyDataMapper>::New();
         sphereMapperop1->SetInputConnection(yellowsphereDataop1->GetOutputPort());
 
         vtkSmartPointer<vtkActor> sphereActorop1 = vtkSmartPointer<vtkActor>::New();
         sphereActorop1->SetMapper(sphereMapperop1);
-        sphereActorop1->GetProperty()->SetColor(0, 100 / 255.0, 0);//ÂÌÉ«
-        // ½«ÇòÌåÌí¼Óµ½äÖÈ¾Æ÷ÖĞ
+        sphereActorop1->GetProperty()->SetColor(0, 100 / 255.0, 0);//ç»¿è‰²
+        // å°†çƒä½“æ·»åŠ åˆ°æ¸²æŸ“å™¨ä¸­
         //renderer->AddActor(sphereActorop1);
 
-        // ´´½¨²¢¿ÉÊÓ»¯ÓÅ»¯µãÓëÖ×ÁöÖÊĞÄÖ®¼äµÄÁ¬Ïß
+        // åˆ›å»ºå¹¶å¯è§†åŒ–ä¼˜åŒ–ç‚¹ä¸è‚¿ç˜¤è´¨å¿ƒä¹‹é—´çš„è¿çº¿
         vtkSmartPointer<vtkLineSource> lineSourceop1 = vtkSmartPointer<vtkLineSource>::New();
-        lineSourceop1->SetPoint1(pathStart1[0], pathStart1[1], pathStart1[2]);  // Æğµã
-        lineSourceop1->SetPoint2(tumorCenter3[0], tumorCenter3[1], tumorCenter3[2]);  // Ö×ÁöÖÊĞÄ
-         // Ê¹ÓÃ TubeFilter Ôö¼ÓÏß¶ÎµÄ°ë¾¶
+        lineSourceop1->SetPoint1(pathStart1[0], pathStart1[1], pathStart1[2]);  // èµ·ç‚¹
+        lineSourceop1->SetPoint2(tumorCenter3[0], tumorCenter3[1], tumorCenter3[2]);  // è‚¿ç˜¤è´¨å¿ƒ
+         // ä½¿ç”¨ TubeFilter å¢åŠ çº¿æ®µçš„åŠå¾„
         vtkSmartPointer<vtkTubeFilter> tubeFilterop1 = vtkSmartPointer<vtkTubeFilter>::New();
         tubeFilterop1->SetInputConnection(lineSourceop1->GetOutputPort());
-        tubeFilterop1->SetRadius(0.5);  // ÉèÖÃÏß¶Î°ë¾¶
-        tubeFilterop1->SetNumberOfSides(20);  // ÉèÖÃÏß¶ÎµÄ¾«¶È
+        tubeFilterop1->SetRadius(0.5);  // è®¾ç½®çº¿æ®µåŠå¾„
+        tubeFilterop1->SetNumberOfSides(20);  // è®¾ç½®çº¿æ®µçš„ç²¾åº¦
         tubeFilterop1->Update();
-        // ´´½¨Ó³ÉäÆ÷²¢½«ÏßÌí¼Óµ½äÖÈ¾Æ÷ÖĞ
+        // åˆ›å»ºæ˜ å°„å™¨å¹¶å°†çº¿æ·»åŠ åˆ°æ¸²æŸ“å™¨ä¸­
         vtkSmartPointer<vtkPolyDataMapper> lineMapperop1 = vtkSmartPointer<vtkPolyDataMapper>::New();
         lineMapperop1->SetInputConnection(tubeFilterop1->GetOutputPort());
 
         vtkSmartPointer<vtkActor> lineActorop1 = vtkSmartPointer<vtkActor>::New();
         lineActorop1->SetMapper(lineMapperop1);
-        lineActorop1->GetProperty()->SetColor(0, 100 / 255.0, 0);  // ÉèÖÃÏßµÄÑÕÉ«ÎªÂÌÉ«
+        lineActorop1->GetProperty()->SetColor(0, 100 / 255.0, 0);  // è®¾ç½®çº¿çš„é¢œè‰²ä¸ºç»¿è‰²
 
-        // ½«ÏßÌí¼Óµ½äÖÈ¾Æ÷ÖĞ
+        // å°†çº¿æ·»åŠ åˆ°æ¸²æŸ“å™¨ä¸­
        //renderer->AddActor(lineActorop1);
     }
-    // ¹¹½¨ OBBTree À´½øĞĞÅö×²¼ì²â£¬¼ÙÉèÄãÒÑ¾­ÓĞÁË bone Êı¾İ
+    // æ„å»º OBBTree æ¥è¿›è¡Œç¢°æ’æ£€æµ‹ï¼Œå‡è®¾ä½ å·²ç»æœ‰äº† bone æ•°æ®
     vtkSmartPointer<vtkOBBTree> obbTree3 = vtkSmartPointer<vtkOBBTree>::New();
     obbTree3->SetDataSet(bone);
     obbTree3->BuildLocator();
-    // µ÷ÓÃÓÅ»¯Ëã·¨²¢»ñÈ¡ÓÅ»¯ºóµÄÆğµãÎ»ÖÃ
+    // è°ƒç”¨ä¼˜åŒ–ç®—æ³•å¹¶è·å–ä¼˜åŒ–åçš„èµ·ç‚¹ä½ç½®
     std::vector<std::vector<double>> optimizedPoints2 = WhaleOptimizationAlgorithm(filteredSkin2, obbTree3, tumorCenter2);
-    // ¿ÉÊÓ»¯ÓÅ»¯ºóµÄµã£¨Ö»ÏÔÊ¾Â·¾¶µÄÆğµã£©
+    // å¯è§†åŒ–ä¼˜åŒ–åçš„ç‚¹ï¼ˆåªæ˜¾ç¤ºè·¯å¾„çš„èµ·ç‚¹ï¼‰
     for (size_t i = 0; i < optimizedPoints2.size(); i++) {
         double pathStart2[3] = { optimizedPoints2[i][0], optimizedPoints2[i][1], optimizedPoints2[i][2] };
 
-        // ÎªÃ¿¸öÆğµã´´½¨Ò»¸öÇòÌå
+        // ä¸ºæ¯ä¸ªèµ·ç‚¹åˆ›å»ºä¸€ä¸ªçƒä½“
         vtkSmartPointer<vtkSphereSource> redsphereDataop2 = vtkSmartPointer<vtkSphereSource>::New();
         redsphereDataop2->SetCenter(pathStart2[0], pathStart2[1], pathStart2[2]);
-        redsphereDataop2->SetRadius(0.5);  // ÉèÖÃÇòÌå°ë¾¶Îª 0.5
+        redsphereDataop2->SetRadius(0.5);  // è®¾ç½®çƒä½“åŠå¾„ä¸º 0.5
 
-        // ¼ÆËã´Ó tumorCenter4 µ½ pathStart µÄ·½ÏòÏòÁ¿
+        // è®¡ç®—ä» tumorCenter4 åˆ° pathStart çš„æ–¹å‘å‘é‡
         double dx2 = pathStart2[0]-20  - tumorCenter2[0];
         double dy2 = pathStart2[1] - tumorCenter2[1];
         double dz2 = pathStart2[2] -15 - tumorCenter2[2];
 
-        // ½«·½ÏòÏòÁ¿µ¥Î»»¯
+        // å°†æ–¹å‘å‘é‡å•ä½åŒ–
         normalizeDirection(dx2, dy2, dz2);
 
-        // ¼ÆËã´Ó tumorCenter4 ¿ªÊ¼£¬³¬¹ı pathStart 20 µ¥Î»µÄÉäÏßÖÕµã
+        // è®¡ç®—ä» tumorCenter4 å¼€å§‹ï¼Œè¶…è¿‡ pathStart 20 å•ä½çš„å°„çº¿ç»ˆç‚¹
         double extraLength1 = 50.0;
         double totalLength1 = distance(tumorCenter2[0], tumorCenter2[1], tumorCenter2[2], pathStart2[0], pathStart2[1], pathStart2[2]) + extraLength1;
 
-        // ¼ÆËãÉäÏßÖÕµã
+        // è®¡ç®—å°„çº¿ç»ˆç‚¹
         double rayEnd[3] = {
             tumorCenter2[0] + dx2 * totalLength1,
             tumorCenter2[1] + dy2 * totalLength1,
@@ -1109,116 +1109,116 @@ int main() {
         };
 
         vtkSmartPointer<vtkPoints> redpoints = vtkSmartPointer<vtkPoints>::New();
-        redpoints->InsertNextPoint(tumorCenter2); // ÉèÖÃÆğµã (tumorCenter4)
-        redpoints->InsertNextPoint(rayEnd);       // ÉèÖÃÖÕµã (rayEnd)
+        redpoints->InsertNextPoint(tumorCenter2); // è®¾ç½®èµ·ç‚¹ (tumorCenter4)
+        redpoints->InsertNextPoint(rayEnd);       // è®¾ç½®ç»ˆç‚¹ (rayEnd)
 
-        // ´´½¨Ò»¸öÏßÔ´¶ÔÏó
+        // åˆ›å»ºä¸€ä¸ªçº¿æºå¯¹è±¡
         vtkSmartPointer<vtkCellArray> redlines = vtkSmartPointer<vtkCellArray>::New();
-        redlines->InsertNextCell(2); // Ò»ÌõÏßÓÉÁ½¸öµã×é³É
-        redlines->InsertCellPoint(0); // Æğµã
-        redlines->InsertCellPoint(1); // ÖÕµã
+        redlines->InsertNextCell(2); // ä¸€æ¡çº¿ç”±ä¸¤ä¸ªç‚¹ç»„æˆ
+        redlines->InsertCellPoint(0); // èµ·ç‚¹
+        redlines->InsertCellPoint(1); // ç»ˆç‚¹
 
-        // ´´½¨Ò»¸öPolyData¶ÔÏó
+        // åˆ›å»ºä¸€ä¸ªPolyDataå¯¹è±¡
         vtkSmartPointer<vtkPolyData> redlineData = vtkSmartPointer<vtkPolyData>::New();
         redlineData->SetPoints(redpoints);
         redlineData->SetLines(redlines);
-        // Ê¹ÓÃ vtkTubeFilter ´´½¨Ô²ÖùÌå
+        // ä½¿ç”¨ vtkTubeFilter åˆ›å»ºåœ†æŸ±ä½“
         vtkSmartPointer<vtkTubeFilter>redtubeFilter = vtkSmartPointer<vtkTubeFilter>::New();
-        redtubeFilter->SetInputData(redlineData);   // ÉèÖÃÏß¶ÎÊı¾İ×÷ÎªÊäÈë
-        redtubeFilter->SetRadius(1);            // ÉèÖÃÔ²ÖùÌåµÄ°ë¾¶£¨Ïàµ±ÓÚ¡°Ïß¶ÎµÄ°ë¾¶¡±£©
-        redtubeFilter->SetNumberOfSides(50);      // ÉèÖÃÔ²ÖùÌåµÄ±ßÊı£¬Ô½¶àÔ½¹â»¬
+        redtubeFilter->SetInputData(redlineData);   // è®¾ç½®çº¿æ®µæ•°æ®ä½œä¸ºè¾“å…¥
+        redtubeFilter->SetRadius(1);            // è®¾ç½®åœ†æŸ±ä½“çš„åŠå¾„ï¼ˆç›¸å½“äºâ€œçº¿æ®µçš„åŠå¾„â€ï¼‰
+        redtubeFilter->SetNumberOfSides(50);      // è®¾ç½®åœ†æŸ±ä½“çš„è¾¹æ•°ï¼Œè¶Šå¤šè¶Šå…‰æ»‘
 
-        // ´´½¨Ó³ÉäÆ÷²¢½«ÇòÌåÌí¼Óµ½äÖÈ¾Æ÷ÖĞ
+        // åˆ›å»ºæ˜ å°„å™¨å¹¶å°†çƒä½“æ·»åŠ åˆ°æ¸²æŸ“å™¨ä¸­
         vtkSmartPointer<vtkPolyDataMapper> redsphereMapperop2 = vtkSmartPointer<vtkPolyDataMapper>::New();
         redsphereMapperop2->SetInputConnection(redsphereDataop2->GetOutputPort());
 
         vtkSmartPointer<vtkActor> redsphereActorop2 = vtkSmartPointer<vtkActor>::New();
         redsphereActorop2->SetMapper(redsphereMapperop2);
-        redsphereActorop2->GetProperty()->SetColor(139 / 255.0, 0, 0);//ºìÉ«
-        // ½«ÇòÌåÌí¼Óµ½äÖÈ¾Æ÷ÖĞ
+        redsphereActorop2->GetProperty()->SetColor(139 / 255.0, 0, 0);//çº¢è‰²
+        // å°†çƒä½“æ·»åŠ åˆ°æ¸²æŸ“å™¨ä¸­
         //renderer->AddActor(sphereActorop2);
 
-        // ´´½¨²¢¿ÉÊÓ»¯ÓÅ»¯µãÓëÖ×ÁöÖÊĞÄÖ®¼äµÄÁ¬Ïß
+        // åˆ›å»ºå¹¶å¯è§†åŒ–ä¼˜åŒ–ç‚¹ä¸è‚¿ç˜¤è´¨å¿ƒä¹‹é—´çš„è¿çº¿
         vtkSmartPointer<vtkLineSource> redlineSourceop2 = vtkSmartPointer<vtkLineSource>::New();
-        redlineSourceop2->SetPoint1(pathStart2[0], pathStart2[1], pathStart2[2]);  // Æğµã
-        redlineSourceop2->SetPoint2(tumorCenter2[0], tumorCenter2[1], tumorCenter2[2]);  // Ö×ÁöÖÊĞÄ
-         // Ê¹ÓÃ TubeFilter Ôö¼ÓÏß¶ÎµÄ°ë¾¶
+        redlineSourceop2->SetPoint1(pathStart2[0], pathStart2[1], pathStart2[2]);  // èµ·ç‚¹
+        redlineSourceop2->SetPoint2(tumorCenter2[0], tumorCenter2[1], tumorCenter2[2]);  // è‚¿ç˜¤è´¨å¿ƒ
+         // ä½¿ç”¨ TubeFilter å¢åŠ çº¿æ®µçš„åŠå¾„
         vtkSmartPointer<vtkTubeFilter> redtubeFilterop2 = vtkSmartPointer<vtkTubeFilter>::New();
         redtubeFilterop2->SetInputConnection(redlineSourceop2->GetOutputPort());
-        redtubeFilterop2->SetRadius(1);  // ÉèÖÃÏß¶Î°ë¾¶
-        redtubeFilterop2->SetNumberOfSides(50);  // ÉèÖÃÏß¶ÎµÄ¾«¶È
+        redtubeFilterop2->SetRadius(1);  // è®¾ç½®çº¿æ®µåŠå¾„
+        redtubeFilterop2->SetNumberOfSides(50);  // è®¾ç½®çº¿æ®µçš„ç²¾åº¦
         redtubeFilterop2->Update();
-        // ´´½¨Ó³ÉäÆ÷²¢½«ÏßÌí¼Óµ½äÖÈ¾Æ÷ÖĞ
+        // åˆ›å»ºæ˜ å°„å™¨å¹¶å°†çº¿æ·»åŠ åˆ°æ¸²æŸ“å™¨ä¸­
         vtkSmartPointer<vtkPolyDataMapper> redlineMapperop2 = vtkSmartPointer<vtkPolyDataMapper>::New();
         redlineMapperop2->SetInputConnection(redtubeFilter->GetOutputPort());
 
         vtkSmartPointer<vtkActor> redlineActorop2 = vtkSmartPointer<vtkActor>::New();
         redlineActorop2->SetMapper(redlineMapperop2);
-        redlineActorop2->GetProperty()->SetColor(139 / 255.0, 0, 0);  // ÉèÖÃÏßµÄÑÕÉ«ÎªºìÉ«
+        redlineActorop2->GetProperty()->SetColor(139 / 255.0, 0, 0);  // è®¾ç½®çº¿çš„é¢œè‰²ä¸ºçº¢è‰²
 
-        // ½«ÏßÌí¼Óµ½äÖÈ¾Æ÷ÖĞ
+        // å°†çº¿æ·»åŠ åˆ°æ¸²æŸ“å™¨ä¸­
    renderer->AddActor(redlineActorop2);//------------------------------------------------------------------------------------------------------
 
-      // ¼ÆËãÍÖÇòÌå³¤Öá£¨20£©ºÍ¶ÌÖá£¨15£©
-      double redsemiMajorAxis = 27.0;  // ³¤Öá
-      double redsemiMinorAxis = 24.5;  // ¶ÌÖá
+      // è®¡ç®—æ¤­çƒä½“é•¿è½´ï¼ˆ20ï¼‰å’ŒçŸ­è½´ï¼ˆ15ï¼‰
+      double redsemiMajorAxis = 27.0;  // é•¿è½´
+      double redsemiMinorAxis = 24.5;  // çŸ­è½´
 
-      // ´´½¨Ò»¸öÍÖÇòÌåµÄ²ÎÊı»¯º¯Êı
+      // åˆ›å»ºä¸€ä¸ªæ¤­çƒä½“çš„å‚æ•°åŒ–å‡½æ•°
       vtkSmartPointer<vtkParametricEllipsoid> redellipsoid = vtkSmartPointer<vtkParametricEllipsoid>::New();
-      redellipsoid->SetXRadius(redsemiMinorAxis);  // ÉèÖÃ³¤Öá
-      redellipsoid->SetYRadius(redsemiMinorAxis);  // ÉèÖÃ¶ÌÖá
-      redellipsoid->SetZRadius(redsemiMajorAxis);  // ÉèÖÃ¶ÌÖá
+      redellipsoid->SetXRadius(redsemiMinorAxis);  // è®¾ç½®é•¿è½´
+      redellipsoid->SetYRadius(redsemiMinorAxis);  // è®¾ç½®çŸ­è½´
+      redellipsoid->SetZRadius(redsemiMajorAxis);  // è®¾ç½®çŸ­è½´
 
-      // ´´½¨Ò»¸ö²ÎÊı»¯º¯ÊıÔ´
+      // åˆ›å»ºä¸€ä¸ªå‚æ•°åŒ–å‡½æ•°æº
       vtkSmartPointer<vtkParametricFunctionSource> redellipsoidSource = vtkSmartPointer<vtkParametricFunctionSource>::New();
       redellipsoidSource->SetParametricFunction(redellipsoid);
       double  M_PI = 3.14;
-      // ´´½¨ÍÖÇòÌåµÄ±ä»»
+      // åˆ›å»ºæ¤­çƒä½“çš„å˜æ¢
       vtkSmartPointer<vtkTransform> redtransform = vtkSmartPointer<vtkTransform>::New();
-      // **Æ½ÒÆ²Ù×÷**£º½«ÍÖÇòÌåµÄÖÊĞÄ´Ó (0, 0, 0) ÒÆ¶¯µ½ tumorCenter4
+      // **å¹³ç§»æ“ä½œ**ï¼šå°†æ¤­çƒä½“çš„è´¨å¿ƒä» (0, 0, 0) ç§»åŠ¨åˆ° tumorCenter4
       redtransform->Translate(tumorCenter2[0], tumorCenter2[1], tumorCenter2[2]);
-      // ´´½¨Ğı×ª¾ØÕó£¬Ä¿±êÊÇ½«ÍÖÇòÌåµÄ³¤Öá£¨Ä¬ÈÏÑØ z Öá£©Ğı×ªµ½Ä¿±ê·½Ïò£¨dx, dy, dz£©
-      double originalDirection2[3] = { 0.0, 0.0, 1.0 };  // Ä¬ÈÏ³¤Öá·½Ïò
+      // åˆ›å»ºæ—‹è½¬çŸ©é˜µï¼Œç›®æ ‡æ˜¯å°†æ¤­çƒä½“çš„é•¿è½´ï¼ˆé»˜è®¤æ²¿ z è½´ï¼‰æ—‹è½¬åˆ°ç›®æ ‡æ–¹å‘ï¼ˆdx, dy, dzï¼‰
+      double originalDirection2[3] = { 0.0, 0.0, 1.0 };  // é»˜è®¤é•¿è½´æ–¹å‘
       double rotationAngle2 = 0.0;
       double rotationAxis2[3] = { 0.0, 0.0, 0.0 };
 
-      // ¼ÆËãĞı×ª½Ç¶ÈºÍĞı×ªÖá
+      // è®¡ç®—æ—‹è½¬è§’åº¦å’Œæ—‹è½¬è½´
       double dotProduct2 = vtkMath::Dot(originalDirection2, new double[3]{ dx2, dy2, dz2 });
       double crossProduct2[3];
       vtkMath::Cross(originalDirection2, new double[3]{ dx2, dy2, dz2 }, crossProduct2);
 
-      // Èç¹û²æ»ıÎªÁã£¬±íÊ¾Á½¸öÏòÁ¿ÒÑ¾­ÖØºÏ£¬ÎŞĞèĞı×ª
+      // å¦‚æœå‰ç§¯ä¸ºé›¶ï¼Œè¡¨ç¤ºä¸¤ä¸ªå‘é‡å·²ç»é‡åˆï¼Œæ— éœ€æ—‹è½¬
       if (vtkMath::Norm(crossProduct2) < 1e-6) {
-          // Èç¹ûÃ»ÓĞĞı×ª£¨Á½¸öÏòÁ¿ÖØºÏ£©£¬ÔòÎŞĞè×öĞı×ª
+          // å¦‚æœæ²¡æœ‰æ—‹è½¬ï¼ˆä¸¤ä¸ªå‘é‡é‡åˆï¼‰ï¼Œåˆ™æ— éœ€åšæ—‹è½¬
           std::cout << "No rotation needed. Vectors are already aligned." << std::endl;
           rotationAngle2 = 0.0;
       }
       else {
-          rotationAngle2 = acos(dotProduct2);  // ¼ÆËã¼Ğ½Ç
-          vtkMath::Normalize(crossProduct2);  // ¹éÒ»»¯Ğı×ªÖá
+          rotationAngle2 = acos(dotProduct2);  // è®¡ç®—å¤¹è§’
+          vtkMath::Normalize(crossProduct2);  // å½’ä¸€åŒ–æ—‹è½¬è½´
           std::cout << "Rotation Axis: (" << crossProduct2[0] << ", " << crossProduct2[1] << ", " << crossProduct2[2] << ")" << std::endl;
       }
 
-      // Ğı×ªÍÖÇòÌåµ½Ä¿±ê·½Ïò
+      // æ—‹è½¬æ¤­çƒä½“åˆ°ç›®æ ‡æ–¹å‘
       redtransform->RotateWXYZ(rotationAngle2 * 180.0 / M_PI, crossProduct2[0], crossProduct2[1], crossProduct2[2]);
 
 
 
-      // ´´½¨Ò»¸ö±ä»»¹ıÂËÆ÷À´Ó¦ÓÃ±ä»»
+      // åˆ›å»ºä¸€ä¸ªå˜æ¢è¿‡æ»¤å™¨æ¥åº”ç”¨å˜æ¢
       vtkSmartPointer<vtkTransformPolyDataFilter> redtransformFilter = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
       redtransformFilter->SetInputConnection(redellipsoidSource->GetOutputPort());
       redtransformFilter->SetTransform(redtransform);
 
-      // ´´½¨Ò»¸öÓ³ÉäÆ÷
+      // åˆ›å»ºä¸€ä¸ªæ˜ å°„å™¨
       vtkSmartPointer<vtkPolyDataMapper> redmapper = vtkSmartPointer<vtkPolyDataMapper>::New();
       redmapper->SetInputConnection(redtransformFilter->GetOutputPort());
 
-      // ´´½¨Ò»¸öActor
+      // åˆ›å»ºä¸€ä¸ªActor
       vtkSmartPointer<vtkActor> redactor = vtkSmartPointer<vtkActor>::New();
       redactor->SetMapper(redmapper);
       redactor->GetProperty()->SetOpacity(0.9);
 
-      // ÉèÖÃÑÕÉ«
+      // è®¾ç½®é¢œè‰²
       redactor->GetProperty()->SetColor(1.0, 0.0, 0.0);  //  cuactor4
   renderer->AddActor(redactor);
     }
@@ -1229,19 +1229,19 @@ int main() {
     filteredSkinActor->GetProperty()->SetOpacity(0.9);
     vtkSmartPointer<vtkActor> filteredSkinActor1 = vtkSmartPointer<vtkActor>::New();
     filteredSkinActor1->SetMapper(filteredSkinMapper1);
-    filteredSkinActor1->GetProperty()->SetColor(0, 0, 139 / 255.0);//À¶É«
+    filteredSkinActor1->GetProperty()->SetColor(0, 0, 139 / 255.0);//è“è‰²
     filteredSkinActor1->GetProperty()->SetOpacity(0.9);
     vtkSmartPointer<vtkActor> filteredSkinActor2 = vtkSmartPointer<vtkActor>::New();
     filteredSkinActor2->SetMapper(filteredSkinMapper2);
-    filteredSkinActor2->GetProperty()->SetColor(139 / 255.0, 0, 0);//ºìÉ«
+    filteredSkinActor2->GetProperty()->SetColor(139 / 255.0, 0, 0);//çº¢è‰²
     filteredSkinActor2->GetProperty()->SetOpacity(0.9);
     vtkSmartPointer<vtkActor> filteredSkinActor3 = vtkSmartPointer<vtkActor>::New();
     filteredSkinActor3->SetMapper(filteredSkinMapper3);
-    filteredSkinActor3->GetProperty()->SetColor(139 / 255.0, 139 / 255.0, 0);//huangÉ«
+    filteredSkinActor3->GetProperty()->SetColor(139 / 255.0, 139 / 255.0, 0);//huangè‰²
     filteredSkinActor3->GetProperty()->SetOpacity(0.9);
     vtkSmartPointer<vtkActor> filteredSkinActor4 = vtkSmartPointer<vtkActor>::New();
     filteredSkinActor4->SetMapper(filteredSkinMapper4);
-    filteredSkinActor4->GetProperty()->SetColor(0, 100 / 255.0, 0);//lvÉ«
+    filteredSkinActor4->GetProperty()->SetColor(0, 100 / 255.0, 0);//lvè‰²
     filteredSkinActor4->GetProperty()->SetOpacity(0.9);
 
     vtkSmartPointer<vtkActor> BoneActor = vtkSmartPointer<vtkActor>::New();
@@ -1290,7 +1290,7 @@ int main() {
     renderer->AddActor(tumorActor);
     renderer->AddActor(liverActor);
     renderer->AddActor(ArteryActor);
-    renderer->SetBackground(1, 1, 1); // ÉèÖÃ±³¾°ÑÕÉ«£¬doubleÀàĞÍ
+    renderer->SetBackground(1, 1, 1); // è®¾ç½®èƒŒæ™¯é¢œè‰²ï¼Œdoubleç±»å‹
     renderWindow->Render();
     renderWindowInteractor->Start();
 
