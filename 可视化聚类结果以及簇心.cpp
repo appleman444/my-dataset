@@ -102,7 +102,7 @@
 //const double PI = 3.141592653589793;
 //
 //
-//// VTK ÎÄ¼ş¶ÁÈ¡
+//// VTK æ–‡ä»¶è¯»å–
 //vtkSmartPointer<vtkPolyData> Reader_VTK(const char* path_name, const char* file_name) {
 //    if (!path_name || !file_name) {
 //        cerr << "Error: Invalid file path!" << endl;
@@ -167,31 +167,31 @@
 //    centersphereSource4->SetPhiResolution(20);  // Resolution of the sphere (smoothness)
 //    centersphereSource4->SetThetaResolution(20);
 //    vtkSmartPointer<vtkPolyData> centerpolyData1 = vtkSmartPointer<vtkPolyData>::New();
-//    centerpolyData1->SetPoints(centerpoints1); // ÉèÖÃµãÊı¾İ
+//    centerpolyData1->SetPoints(centerpoints1); // è®¾ç½®ç‚¹æ•°æ®
 //    vtkSmartPointer<vtkPolyData> centerpolyData2 = vtkSmartPointer<vtkPolyData>::New();
-//    centerpolyData2->SetPoints(centerpoints2); // ÉèÖÃµãÊı¾İ
+//    centerpolyData2->SetPoints(centerpoints2); // è®¾ç½®ç‚¹æ•°æ®
 //    vtkSmartPointer<vtkPolyData> centerpolyData3 = vtkSmartPointer<vtkPolyData>::New();
-//    centerpolyData3->SetPoints(centerpoints3); // ÉèÖÃµãÊı¾İ
+//    centerpolyData3->SetPoints(centerpoints3); // è®¾ç½®ç‚¹æ•°æ®
 //    vtkSmartPointer<vtkPolyData> centerpolyData4 = vtkSmartPointer<vtkPolyData>::New();
 //
-//    centerpolyData4->SetPoints(centerpoints4); // ÉèÖÃµãÊı¾İ
-//    // 4. Ê¹ÓÃ vtkGlyph3D ½«Ã¿¸öµã×ª»»ÎªÇòÌå
+//    centerpolyData4->SetPoints(centerpoints4); // è®¾ç½®ç‚¹æ•°æ®
+//    // 4. ä½¿ç”¨ vtkGlyph3D å°†æ¯ä¸ªç‚¹è½¬æ¢ä¸ºçƒä½“
 //    vtkSmartPointer<vtkGlyph3D> cglyph3D1 = vtkSmartPointer<vtkGlyph3D>::New();
-//    cglyph3D1->SetInputData(centerpolyData1);  // ÊäÈëµãÊı¾İ
-//    cglyph3D1->SetSourceConnection(centersphereSource1->GetOutputPort());  // ÉèÖÃÇòÌåÔ´
-//    cglyph3D1->Update();  // ¸üĞÂÉú³ÉµÄ½á¹û
+//    cglyph3D1->SetInputData(centerpolyData1);  // è¾“å…¥ç‚¹æ•°æ®
+//    cglyph3D1->SetSourceConnection(centersphereSource1->GetOutputPort());  // è®¾ç½®çƒä½“æº
+//    cglyph3D1->Update();  // æ›´æ–°ç”Ÿæˆçš„ç»“æœ
 //    vtkSmartPointer<vtkGlyph3D> cglyph3D2 = vtkSmartPointer<vtkGlyph3D>::New();
-//    cglyph3D2->SetInputData(centerpolyData2);  // ÊäÈëµãÊı¾İ
-//    cglyph3D2->SetSourceConnection(centersphereSource2->GetOutputPort());  // ÉèÖÃÇòÌåÔ´
-//    cglyph3D2->Update();  // ¸üĞÂÉú³ÉµÄ½á¹û
+//    cglyph3D2->SetInputData(centerpolyData2);  // è¾“å…¥ç‚¹æ•°æ®
+//    cglyph3D2->SetSourceConnection(centersphereSource2->GetOutputPort());  // è®¾ç½®çƒä½“æº
+//    cglyph3D2->Update();  // æ›´æ–°ç”Ÿæˆçš„ç»“æœ
 //    vtkSmartPointer<vtkGlyph3D> cglyph3D3 = vtkSmartPointer<vtkGlyph3D>::New();
-//    cglyph3D3->SetInputData(centerpolyData3);  // ÊäÈëµãÊı¾İ
-//    cglyph3D3->SetSourceConnection(centersphereSource3->GetOutputPort());  // ÉèÖÃÇòÌåÔ´
-//    cglyph3D3->Update();  // ¸üĞÂÉú³ÉµÄ½á¹û
+//    cglyph3D3->SetInputData(centerpolyData3);  // è¾“å…¥ç‚¹æ•°æ®
+//    cglyph3D3->SetSourceConnection(centersphereSource3->GetOutputPort());  // è®¾ç½®çƒä½“æº
+//    cglyph3D3->Update();  // æ›´æ–°ç”Ÿæˆçš„ç»“æœ
 //    vtkSmartPointer<vtkGlyph3D> cglyph3D4 = vtkSmartPointer<vtkGlyph3D>::New();
-//    cglyph3D4->SetInputData(centerpolyData4);  // ÊäÈëµãÊı¾İ
-//    cglyph3D4->SetSourceConnection(centersphereSource4->GetOutputPort());  // ÉèÖÃÇòÌåÔ´
-//    cglyph3D4->Update();  // ¸üĞÂÉú³ÉµÄ½á¹û
+//    cglyph3D4->SetInputData(centerpolyData4);  // è¾“å…¥ç‚¹æ•°æ®
+//    cglyph3D4->SetSourceConnection(centersphereSource4->GetOutputPort());  // è®¾ç½®çƒä½“æº
+//    cglyph3D4->Update();  // æ›´æ–°ç”Ÿæˆçš„ç»“æœ
 //
 //    // Create a mapper and actor for each tumor center
 //    vtkSmartPointer<vtkPolyDataMapper>  centersphereMapper1 = vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -205,16 +205,16 @@
 //
 //    vtkSmartPointer<vtkActor>  centersphereActor1 = vtkSmartPointer<vtkActor>::New();
 //    centersphereActor1->SetMapper(centersphereMapper1);
-//    centersphereActor1->GetProperty()->SetColor(1, 0, 0);  // ÉèÖÃÑÕÉ«ÎªºìÉ«
+//    centersphereActor1->GetProperty()->SetColor(1, 0, 0);  // è®¾ç½®é¢œè‰²ä¸ºçº¢è‰²
 //    vtkSmartPointer<vtkActor>  centersphereActor2 = vtkSmartPointer<vtkActor>::New();
 //    centersphereActor2->SetMapper(centersphereMapper2);
-//    centersphereActor2->GetProperty()->SetColor(0, 0, 1);  // ÉèÖÃÑÕÉ«ÎªºìÉ«
+//    centersphereActor2->GetProperty()->SetColor(0, 0, 1);  // è®¾ç½®é¢œè‰²ä¸ºçº¢è‰²
 //    vtkSmartPointer<vtkActor>  centersphereActor3 = vtkSmartPointer<vtkActor>::New();
 //    centersphereActor3->SetMapper(centersphereMapper3);
-//    centersphereActor3->GetProperty()->SetColor(1, 1, 0);  // ÉèÖÃÑÕÉ«ÎªºìÉ«
+//    centersphereActor3->GetProperty()->SetColor(1, 1, 0);  // è®¾ç½®é¢œè‰²ä¸ºçº¢è‰²
 //    vtkSmartPointer<vtkActor>  centersphereActor4 = vtkSmartPointer<vtkActor>::New();
 //    centersphereActor4->SetMapper(centersphereMapper4);
-//    centersphereActor4->GetProperty()->SetColor(0, 1, 0);  // ÉèÖÃÑÕÉ«ÎªºìÉ«
+//    centersphereActor4->GetProperty()->SetColor(0, 1, 0);  // è®¾ç½®é¢œè‰²ä¸ºçº¢è‰²
 //
 //   
 //  
@@ -230,142 +230,142 @@
 //    std::string fileName2 = "D:\\Data Disk\\LW\\Data\\3Dircadb1.1\\CSV\\PKX\\tumor_cluster_3.csv";
 //    std::string fileName3 = "D:\\Data Disk\\LW\\Data\\3Dircadb1.1\\CSV\\PKX\\tumor_cluster_4.csv";
 //
-//    // ´´½¨ vtkDelimitedTextReader ¶ÁÈ¡ CSV ÎÄ¼ş
+//    // åˆ›å»º vtkDelimitedTextReader è¯»å– CSV æ–‡ä»¶
 //    vtkSmartPointer<vtkDelimitedTextReader> reader = vtkSmartPointer<vtkDelimitedTextReader>::New();
 //    reader->SetFileName(fileName.c_str());
-//    reader->SetHaveHeaders(true); // Èç¹û CSV ÎÄ¼şÓĞÍ·²¿ĞÅÏ¢
-//    reader->SetFieldDelimiterCharacters(","); // Ê¹ÓÃ¶ººÅ×÷Îª·Ö¸ô·û
+//    reader->SetHaveHeaders(true); // å¦‚æœ CSV æ–‡ä»¶æœ‰å¤´éƒ¨ä¿¡æ¯
+//    reader->SetFieldDelimiterCharacters(","); // ä½¿ç”¨é€—å·ä½œä¸ºåˆ†éš”ç¬¦
 //    reader->Update();
 //    vtkSmartPointer<vtkDelimitedTextReader> reader1 = vtkSmartPointer<vtkDelimitedTextReader>::New();
 //    reader1->SetFileName(fileName1.c_str());
-//    reader1->SetHaveHeaders(true); // Èç¹û CSV ÎÄ¼şÓĞÍ·²¿ĞÅÏ¢
-//    reader1->SetFieldDelimiterCharacters(","); // Ê¹ÓÃ¶ººÅ×÷Îª·Ö¸ô·û
+//    reader1->SetHaveHeaders(true); // å¦‚æœ CSV æ–‡ä»¶æœ‰å¤´éƒ¨ä¿¡æ¯
+//    reader1->SetFieldDelimiterCharacters(","); // ä½¿ç”¨é€—å·ä½œä¸ºåˆ†éš”ç¬¦
 //    reader1->Update();
 //    vtkSmartPointer<vtkDelimitedTextReader> reader2 = vtkSmartPointer<vtkDelimitedTextReader>::New();
 //    reader2->SetFileName(fileName2.c_str());
-//    reader2->SetHaveHeaders(true); // Èç¹û CSV ÎÄ¼şÓĞÍ·²¿ĞÅÏ¢
-//    reader2->SetFieldDelimiterCharacters(","); // Ê¹ÓÃ¶ººÅ×÷Îª·Ö¸ô·û
+//    reader2->SetHaveHeaders(true); // å¦‚æœ CSV æ–‡ä»¶æœ‰å¤´éƒ¨ä¿¡æ¯
+//    reader2->SetFieldDelimiterCharacters(","); // ä½¿ç”¨é€—å·ä½œä¸ºåˆ†éš”ç¬¦
 //    reader2->Update();
 //    vtkSmartPointer<vtkDelimitedTextReader> reader3 = vtkSmartPointer<vtkDelimitedTextReader>::New();
 //    reader3->SetFileName(fileName3.c_str());
-//    reader3->SetHaveHeaders(true); // Èç¹û CSV ÎÄ¼şÓĞÍ·²¿ĞÅÏ¢
-//    reader3->SetFieldDelimiterCharacters(","); // Ê¹ÓÃ¶ººÅ×÷Îª·Ö¸ô·û
+//    reader3->SetHaveHeaders(true); // å¦‚æœ CSV æ–‡ä»¶æœ‰å¤´éƒ¨ä¿¡æ¯
+//    reader3->SetFieldDelimiterCharacters(","); // ä½¿ç”¨é€—å·ä½œä¸ºåˆ†éš”ç¬¦
 //    reader3->Update();
 //
-//    // ¶ÁÈ¡µÄÊı¾İ½«´æ´¢ÔÚ vtkTable ÖĞ
+//    // è¯»å–çš„æ•°æ®å°†å­˜å‚¨åœ¨ vtkTable ä¸­
 //    vtkSmartPointer<vtkTable> table = reader->GetOutput();
 //    vtkSmartPointer<vtkTable> table1 = reader1->GetOutput();
 //    vtkSmartPointer<vtkTable> table2 = reader2->GetOutput();
 //    vtkSmartPointer<vtkTable> table3 = reader3->GetOutput();
 //
 //
-//    // ´´½¨ vtkPoints À´´æ´¢ CSV ÎÄ¼şÖĞµÄµãÊı¾İ
+//    // åˆ›å»º vtkPoints æ¥å­˜å‚¨ CSV æ–‡ä»¶ä¸­çš„ç‚¹æ•°æ®
 //    vtkSmartPointer<vtkPoints> cupoints1 = vtkSmartPointer<vtkPoints>::New();
-//    // ¼ÙÉè CSV ÎÄ¼şµÄÁĞÊÇ x, y, z
+//    // å‡è®¾ CSV æ–‡ä»¶çš„åˆ—æ˜¯ x, y, z
 //    for (vtkIdType i = 0; i < table->GetNumberOfRows(); ++i) {
-//        double x = table->GetValue(i, 0).ToDouble(); // »ñÈ¡ x ×ø±ê
-//        double y = table->GetValue(i, 1).ToDouble(); // »ñÈ¡ y ×ø±ê
-//        double z = table->GetValue(i, 2).ToDouble(); // »ñÈ¡ z ×ø±ê
+//        double x = table->GetValue(i, 0).ToDouble(); // è·å– x åæ ‡
+//        double y = table->GetValue(i, 1).ToDouble(); // è·å– y åæ ‡
+//        double z = table->GetValue(i, 2).ToDouble(); // è·å– z åæ ‡
 //
-//        // ½«µãÌí¼Óµ½ vtkPoints ÖĞ
+//        // å°†ç‚¹æ·»åŠ åˆ° vtkPoints ä¸­
 //        cupoints1->InsertNextPoint(x, y, z);
 //    }
-//    // ´´½¨ vtkPoints À´´æ´¢ CSV ÎÄ¼şÖĞµÄµãÊı¾İ
+//    // åˆ›å»º vtkPoints æ¥å­˜å‚¨ CSV æ–‡ä»¶ä¸­çš„ç‚¹æ•°æ®
 //    vtkSmartPointer<vtkPoints> cupoints2 = vtkSmartPointer<vtkPoints>::New();
-//    // ¼ÙÉè CSV ÎÄ¼şµÄÁĞÊÇ x, y, z
+//    // å‡è®¾ CSV æ–‡ä»¶çš„åˆ—æ˜¯ x, y, z
 //    for (vtkIdType i = 0; i < table1->GetNumberOfRows(); ++i) {
-//        double x = table1->GetValue(i, 0).ToDouble(); // »ñÈ¡ x ×ø±ê
-//        double y = table1->GetValue(i, 1).ToDouble(); // »ñÈ¡ y ×ø±ê
-//        double z = table1->GetValue(i, 2).ToDouble(); // »ñÈ¡ z ×ø±ê
+//        double x = table1->GetValue(i, 0).ToDouble(); // è·å– x åæ ‡
+//        double y = table1->GetValue(i, 1).ToDouble(); // è·å– y åæ ‡
+//        double z = table1->GetValue(i, 2).ToDouble(); // è·å– z åæ ‡
 //
-//        // ½«µãÌí¼Óµ½ vtkPoints ÖĞ
+//        // å°†ç‚¹æ·»åŠ åˆ° vtkPoints ä¸­
 //        cupoints2->InsertNextPoint(x, y, z);
 //    }
-//    // ´´½¨ vtkPoints À´´æ´¢ CSV ÎÄ¼şÖĞµÄµãÊı¾İ
+//    // åˆ›å»º vtkPoints æ¥å­˜å‚¨ CSV æ–‡ä»¶ä¸­çš„ç‚¹æ•°æ®
 //    vtkSmartPointer<vtkPoints> cupoints3 = vtkSmartPointer<vtkPoints>::New();
-//    // ¼ÙÉè CSV ÎÄ¼şµÄÁĞÊÇ x, y, z
+//    // å‡è®¾ CSV æ–‡ä»¶çš„åˆ—æ˜¯ x, y, z
 //    for (vtkIdType i = 0; i < table2->GetNumberOfRows(); ++i) {
-//        double x = table2->GetValue(i, 0).ToDouble(); // »ñÈ¡ x ×ø±ê
-//        double y = table2->GetValue(i, 1).ToDouble(); // »ñÈ¡ y ×ø±ê
-//        double z = table2->GetValue(i, 2).ToDouble(); // »ñÈ¡ z ×ø±ê
+//        double x = table2->GetValue(i, 0).ToDouble(); // è·å– x åæ ‡
+//        double y = table2->GetValue(i, 1).ToDouble(); // è·å– y åæ ‡
+//        double z = table2->GetValue(i, 2).ToDouble(); // è·å– z åæ ‡
 //
-//        // ½«µãÌí¼Óµ½ vtkPoints ÖĞ
+//        // å°†ç‚¹æ·»åŠ åˆ° vtkPoints ä¸­
 //        cupoints3->InsertNextPoint(x, y, z);
 //    }
-//    // ´´½¨ vtkPoints À´´æ´¢ CSV ÎÄ¼şÖĞµÄµãÊı¾İ
+//    // åˆ›å»º vtkPoints æ¥å­˜å‚¨ CSV æ–‡ä»¶ä¸­çš„ç‚¹æ•°æ®
 //    vtkSmartPointer<vtkPoints> cupoints4 = vtkSmartPointer<vtkPoints>::New();
-//    // ¼ÙÉè CSV ÎÄ¼şµÄÁĞÊÇ x, y, z
+//    // å‡è®¾ CSV æ–‡ä»¶çš„åˆ—æ˜¯ x, y, z
 //    for (vtkIdType i = 0; i < table3->GetNumberOfRows(); ++i) {
-//        double x = table3->GetValue(i, 0).ToDouble(); // »ñÈ¡ x ×ø±ê
-//        double y = table3->GetValue(i, 1).ToDouble(); // »ñÈ¡ y ×ø±ê
-//        double z = table3->GetValue(i, 2).ToDouble(); // »ñÈ¡ z ×ø±ê
+//        double x = table3->GetValue(i, 0).ToDouble(); // è·å– x åæ ‡
+//        double y = table3->GetValue(i, 1).ToDouble(); // è·å– y åæ ‡
+//        double z = table3->GetValue(i, 2).ToDouble(); // è·å– z åæ ‡
 //
-//        // ½«µãÌí¼Óµ½ vtkPoints ÖĞ
+//        // å°†ç‚¹æ·»åŠ åˆ° vtkPoints ä¸­
 //        cupoints4->InsertNextPoint(x, y, z);
 //    }
-//    // 3. Ê¹ÓÃ vtkSphereSource ´´½¨ÇòÌå
+//    // 3. ä½¿ç”¨ vtkSphereSource åˆ›å»ºçƒä½“
 //    vtkSmartPointer<vtkSphereSource> cusphereSource1 = vtkSmartPointer<vtkSphereSource>::New();
-//    cusphereSource1->SetRadius(0.5);  // ÉèÖÃÇòÌåµÄ°ë¾¶
-//    cusphereSource1->SetPhiResolution(10);  // ÉèÖÃ×İÏò·Ö±æÂÊ
-//    cusphereSource1->SetThetaResolution(10);  // ÉèÖÃºáÏò·Ö±æÂÊ
-//    cusphereSource1->Update();  // ¸üĞÂÇòÌåÔ´
+//    cusphereSource1->SetRadius(0.5);  // è®¾ç½®çƒä½“çš„åŠå¾„
+//    cusphereSource1->SetPhiResolution(10);  // è®¾ç½®çºµå‘åˆ†è¾¨ç‡
+//    cusphereSource1->SetThetaResolution(10);  // è®¾ç½®æ¨ªå‘åˆ†è¾¨ç‡
+//    cusphereSource1->Update();  // æ›´æ–°çƒä½“æº
 //    vtkSmartPointer<vtkSphereSource> cusphereSource2 = vtkSmartPointer<vtkSphereSource>::New();
-//    cusphereSource2->SetRadius(0.5);  // ÉèÖÃÇòÌåµÄ°ë¾¶
-//    cusphereSource2->SetPhiResolution(10);  // ÉèÖÃ×İÏò·Ö±æÂÊ
-//    cusphereSource2->SetThetaResolution(10);  // ÉèÖÃºáÏò·Ö±æÂÊ
-//    cusphereSource2->Update();  // ¸üĞÂÇòÌåÔ´
+//    cusphereSource2->SetRadius(0.5);  // è®¾ç½®çƒä½“çš„åŠå¾„
+//    cusphereSource2->SetPhiResolution(10);  // è®¾ç½®çºµå‘åˆ†è¾¨ç‡
+//    cusphereSource2->SetThetaResolution(10);  // è®¾ç½®æ¨ªå‘åˆ†è¾¨ç‡
+//    cusphereSource2->Update();  // æ›´æ–°çƒä½“æº
 //    vtkSmartPointer<vtkSphereSource> cusphereSource3 = vtkSmartPointer<vtkSphereSource>::New();
-//    cusphereSource3->SetRadius(0.5);  // ÉèÖÃÇòÌåµÄ°ë¾¶
-//    cusphereSource3->SetPhiResolution(10);  // ÉèÖÃ×İÏò·Ö±æÂÊ
-//    cusphereSource3->SetThetaResolution(10);  // ÉèÖÃºáÏò·Ö±æÂÊ
-//    cusphereSource3->Update();  // ¸üĞÂÇòÌåÔ´
+//    cusphereSource3->SetRadius(0.5);  // è®¾ç½®çƒä½“çš„åŠå¾„
+//    cusphereSource3->SetPhiResolution(10);  // è®¾ç½®çºµå‘åˆ†è¾¨ç‡
+//    cusphereSource3->SetThetaResolution(10);  // è®¾ç½®æ¨ªå‘åˆ†è¾¨ç‡
+//    cusphereSource3->Update();  // æ›´æ–°çƒä½“æº
 //    vtkSmartPointer<vtkSphereSource> cusphereSource4 = vtkSmartPointer<vtkSphereSource>::New();
-//    cusphereSource4->SetRadius(0.5);  // ÉèÖÃÇòÌåµÄ°ë¾¶
-//    cusphereSource4->SetPhiResolution(10);  // ÉèÖÃ×İÏò·Ö±æÂÊ
-//    cusphereSource4->SetThetaResolution(10);  // ÉèÖÃºáÏò·Ö±æÂÊ
-//    cusphereSource4->Update();  // ¸üĞÂÇòÌåÔ´
+//    cusphereSource4->SetRadius(0.5);  // è®¾ç½®çƒä½“çš„åŠå¾„
+//    cusphereSource4->SetPhiResolution(10);  // è®¾ç½®çºµå‘åˆ†è¾¨ç‡
+//    cusphereSource4->SetThetaResolution(10);  // è®¾ç½®æ¨ªå‘åˆ†è¾¨ç‡
+//    cusphereSource4->Update();  // æ›´æ–°çƒä½“æº
 //    vtkSmartPointer<vtkPolyData> cupolyData1 = vtkSmartPointer<vtkPolyData>::New();
-//    cupolyData1->SetPoints(cupoints1); // ÉèÖÃµãÊı¾İ
+//    cupolyData1->SetPoints(cupoints1); // è®¾ç½®ç‚¹æ•°æ®
 //    vtkSmartPointer<vtkPolyData> cupolyData2 = vtkSmartPointer<vtkPolyData>::New();
-//    cupolyData2->SetPoints(cupoints2); // ÉèÖÃµãÊı¾İ
+//    cupolyData2->SetPoints(cupoints2); // è®¾ç½®ç‚¹æ•°æ®
 //    vtkSmartPointer<vtkPolyData> cupolyData3 = vtkSmartPointer<vtkPolyData>::New();
-//    cupolyData3->SetPoints(cupoints3); // ÉèÖÃµãÊı¾İ
+//    cupolyData3->SetPoints(cupoints3); // è®¾ç½®ç‚¹æ•°æ®
 //    vtkSmartPointer<vtkPolyData> cupolyData4 = vtkSmartPointer<vtkPolyData>::New();
-//    cupolyData4->SetPoints(cupoints4); // ÉèÖÃµãÊı¾İ
-//    // 4. Ê¹ÓÃ vtkGlyph3D ½«Ã¿¸öµã×ª»»ÎªÇòÌå
+//    cupolyData4->SetPoints(cupoints4); // è®¾ç½®ç‚¹æ•°æ®
+//    // 4. ä½¿ç”¨ vtkGlyph3D å°†æ¯ä¸ªç‚¹è½¬æ¢ä¸ºçƒä½“
 //    vtkSmartPointer<vtkGlyph3D> glyph3D1 = vtkSmartPointer<vtkGlyph3D>::New();
-//    glyph3D1->SetInputData(cupolyData1);  // ÊäÈëµãÊı¾İ
-//    glyph3D1->SetSourceConnection(cusphereSource1->GetOutputPort());  // ÉèÖÃÇòÌåÔ´
-//    glyph3D1->Update();  // ¸üĞÂÉú³ÉµÄ½á¹û
+//    glyph3D1->SetInputData(cupolyData1);  // è¾“å…¥ç‚¹æ•°æ®
+//    glyph3D1->SetSourceConnection(cusphereSource1->GetOutputPort());  // è®¾ç½®çƒä½“æº
+//    glyph3D1->Update();  // æ›´æ–°ç”Ÿæˆçš„ç»“æœ
 //    vtkSmartPointer<vtkGlyph3D> glyph3D2 = vtkSmartPointer<vtkGlyph3D>::New();
-//    glyph3D2->SetInputData(cupolyData2);  // ÊäÈëµãÊı¾İ
-//    glyph3D2->SetSourceConnection(cusphereSource2->GetOutputPort());  // ÉèÖÃÇòÌåÔ´
-//    glyph3D2->Update();  // ¸üĞÂÉú³ÉµÄ½á¹û
+//    glyph3D2->SetInputData(cupolyData2);  // è¾“å…¥ç‚¹æ•°æ®
+//    glyph3D2->SetSourceConnection(cusphereSource2->GetOutputPort());  // è®¾ç½®çƒä½“æº
+//    glyph3D2->Update();  // æ›´æ–°ç”Ÿæˆçš„ç»“æœ
 //    vtkSmartPointer<vtkGlyph3D> glyph3D3 = vtkSmartPointer<vtkGlyph3D>::New();
-//    glyph3D3->SetInputData(cupolyData3);  // ÊäÈëµãÊı¾İ
-//    glyph3D3->SetSourceConnection(cusphereSource3->GetOutputPort());  // ÉèÖÃÇòÌåÔ´
-//    glyph3D3->Update();  // ¸üĞÂÉú³ÉµÄ½á¹û
+//    glyph3D3->SetInputData(cupolyData3);  // è¾“å…¥ç‚¹æ•°æ®
+//    glyph3D3->SetSourceConnection(cusphereSource3->GetOutputPort());  // è®¾ç½®çƒä½“æº
+//    glyph3D3->Update();  // æ›´æ–°ç”Ÿæˆçš„ç»“æœ
 //    vtkSmartPointer<vtkGlyph3D> glyph3D4 = vtkSmartPointer<vtkGlyph3D>::New();
-//    glyph3D4->SetInputData(cupolyData4);  // ÊäÈëµãÊı¾İ
-//    glyph3D4->SetSourceConnection(cusphereSource4->GetOutputPort());  // ÉèÖÃÇòÌåÔ´
-//    glyph3D4->Update();  // ¸üĞÂÉú³ÉµÄ½á¹û
+//    glyph3D4->SetInputData(cupolyData4);  // è¾“å…¥ç‚¹æ•°æ®
+//    glyph3D4->SetSourceConnection(cusphereSource4->GetOutputPort());  // è®¾ç½®çƒä½“æº
+//    glyph3D4->Update();  // æ›´æ–°ç”Ÿæˆçš„ç»“æœ
 //
 //
 //
-//     // ´´½¨Ò»¸ö Mapper À´äÖÈ¾µãÊı¾İ
+//     // åˆ›å»ºä¸€ä¸ª Mapper æ¥æ¸²æŸ“ç‚¹æ•°æ®
 //    vtkSmartPointer<vtkPolyDataMapper> cumapper1 = vtkSmartPointer<vtkPolyDataMapper>::New();
 //    cumapper1->SetInputConnection(glyph3D1->GetOutputPort());
-//    // ´´½¨Ò»¸ö Mapper À´äÖÈ¾µãÊı¾İ
+//    // åˆ›å»ºä¸€ä¸ª Mapper æ¥æ¸²æŸ“ç‚¹æ•°æ®
 //    vtkSmartPointer<vtkPolyDataMapper> cumapper2 = vtkSmartPointer<vtkPolyDataMapper>::New();
 //    cumapper2->SetInputConnection(glyph3D2->GetOutputPort());
 //
-//    // ´´½¨Ò»¸ö Mapper À´äÖÈ¾µãÊı¾İ
+//    // åˆ›å»ºä¸€ä¸ª Mapper æ¥æ¸²æŸ“ç‚¹æ•°æ®
 //    vtkSmartPointer<vtkPolyDataMapper> cumapper3 = vtkSmartPointer<vtkPolyDataMapper>::New();
 //    cumapper3->SetInputConnection(glyph3D3->GetOutputPort());
-//    // ´´½¨Ò»¸ö Mapper À´äÖÈ¾µãÊı¾İ
+//    // åˆ›å»ºä¸€ä¸ª Mapper æ¥æ¸²æŸ“ç‚¹æ•°æ®
 //    vtkSmartPointer<vtkPolyDataMapper> cumapper4 = vtkSmartPointer<vtkPolyDataMapper>::New();
 //    cumapper4->SetInputConnection(glyph3D4->GetOutputPort());
-//    // ´´½¨Ò»¸ö Mapper À´äÖÈ¾µãÊı¾İ
+//    // åˆ›å»ºä¸€ä¸ª Mapper æ¥æ¸²æŸ“ç‚¹æ•°æ®
 //
 //  
 //    vtkSmartPointer<vtkPolyDataMapper> BoneMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -381,10 +381,10 @@
 //    vtkSmartPointer<vtkPolyDataMapper> venoussystemMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
 //    venoussystemMapper->SetInputData(venoussystem);
 //
-//    // ´´½¨ÍÖÇòÌå£¨20, 15, 15 µÄÍÖÇò£©
-//    double a = 29;  // ³¤Öá
-//    double b = 22;  // ¶ÌÖá
-//    double c = 22;  // ¶ÌÖá
+//    // åˆ›å»ºæ¤­çƒä½“ï¼ˆ20, 15, 15 çš„æ¤­çƒï¼‰
+//    double a = 29;  // é•¿è½´
+//    double b = 22;  // çŸ­è½´
+//    double c = 22;  // çŸ­è½´
 //    vtkSmartPointer<vtkParametricEllipsoid> ellipsoid = vtkSmartPointer<vtkParametricEllipsoid>::New();
 //    ellipsoid->SetXRadius(a);
 //    ellipsoid->SetYRadius(b);
@@ -393,15 +393,15 @@
 //    vtkSmartPointer<vtkParametricFunctionSource> source = vtkSmartPointer<vtkParametricFunctionSource>::New();
 //    source->SetParametricFunction(ellipsoid);
 //    source->Update();
-//    // Ê¹ÓÃÈı½Ç»¯Ëã·¨´¦ÀíÍÖÇòµÄ±íÃæ
+//    // ä½¿ç”¨ä¸‰è§’åŒ–ç®—æ³•å¤„ç†æ¤­çƒçš„è¡¨é¢
 //    vtkSmartPointer<vtkTriangleFilter> triFilter = vtkSmartPointer<vtkTriangleFilter>::New();
 //    triFilter->SetInputConnection(source->GetOutputPort());
 //    triFilter->Update();
 //
-//    // ´´½¨ÍÖÇòÌåµÄÓ³ÉäÆ÷
+//    // åˆ›å»ºæ¤­çƒä½“çš„æ˜ å°„å™¨
 //    vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
 //    mapper->SetInputConnection(triFilter->GetOutputPort());
-//    // ´´½¨ÍÖÇòÌåµÄÓ³ÉäÆ÷
+//    // åˆ›å»ºæ¤­çƒä½“çš„æ˜ å°„å™¨
 //    vtkSmartPointer<vtkPolyDataMapper> mapper2 = vtkSmartPointer<vtkPolyDataMapper>::New();
 //    mapper2->SetInputConnection(triFilter->GetOutputPort());
 //    vtkSmartPointer<vtkPolyDataMapper> mapper3 = vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -418,56 +418,56 @@
 //
 //
 //
-//    // ½«ÖĞĞÄ×ø±êÌí¼Óµ½ vtkPoints ÖĞ
+//    // å°†ä¸­å¿ƒåæ ‡æ·»åŠ åˆ° vtkPoints ä¸­
 //    cu1->InsertNextPoint(tumorCenter1);
-//    // ´´½¨ÍÖÇòÌåµÄ Actor£¬²¢ÉèÖÃÆäÑÕÉ«ÎªºìÉ«
+//    // åˆ›å»ºæ¤­çƒä½“çš„ Actorï¼Œå¹¶è®¾ç½®å…¶é¢œè‰²ä¸ºçº¢è‰²
 //    vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
 //    actor->SetMapper(mapper);
-//    actor->GetProperty()->SetColor(1, 0, 0);  // ÉèÖÃÑÕÉ«ÎªºìÉ«
-//    actor->SetPosition(tumorCenter1);  // ½«ÍÖÇòÌå·ÅÖÃµ½Ö×ÁöÖÊĞÄÎ»ÖÃ
+//    actor->GetProperty()->SetColor(1, 0, 0);  // è®¾ç½®é¢œè‰²ä¸ºçº¢è‰²
+//    actor->SetPosition(tumorCenter1);  // å°†æ¤­çƒä½“æ”¾ç½®åˆ°è‚¿ç˜¤è´¨å¿ƒä½ç½®
 //    actor->GetProperty()->SetOpacity(0.8);
 //
-//    // ½«ÖĞĞÄ×ø±êÌí¼Óµ½ vtkPoints ÖĞ
+//    // å°†ä¸­å¿ƒåæ ‡æ·»åŠ åˆ° vtkPoints ä¸­
 //    cu2->InsertNextPoint(tumorCenter2);
-//    // ´´½¨ÍÖÇòÌåµÄ Actor£¬²¢ÉèÖÃÆäÑÕÉ«ÎªºìÉ«
+//    // åˆ›å»ºæ¤­çƒä½“çš„ Actorï¼Œå¹¶è®¾ç½®å…¶é¢œè‰²ä¸ºçº¢è‰²
 //    vtkSmartPointer<vtkActor> actor2 = vtkSmartPointer<vtkActor>::New();
 //    actor2->SetMapper(mapper2);
-//    actor2->GetProperty()->SetColor(1, 1, 0);  // ÉèÖÃÑÕÉ«ÎªºìÉ«
-//    actor2->SetPosition(tumorCenter2);  // ½«ÍÖÇòÌå·ÅÖÃµ½Ö×ÁöÖÊĞÄÎ»ÖÃ
+//    actor2->GetProperty()->SetColor(1, 1, 0);  // è®¾ç½®é¢œè‰²ä¸ºçº¢è‰²
+//    actor2->SetPosition(tumorCenter2);  // å°†æ¤­çƒä½“æ”¾ç½®åˆ°è‚¿ç˜¤è´¨å¿ƒä½ç½®
 //    actor2->GetProperty()->SetOpacity(0.8);
-//    // ½«ÖĞĞÄ×ø±êÌí¼Óµ½ vtkPoints ÖĞ
+//    // å°†ä¸­å¿ƒåæ ‡æ·»åŠ åˆ° vtkPoints ä¸­
 //    cu3->InsertNextPoint(tumorCenter3);
-//    // ´´½¨ÍÖÇòÌåµÄ Actor£¬²¢ÉèÖÃÆäÑÕÉ«ÎªºìÉ«
+//    // åˆ›å»ºæ¤­çƒä½“çš„ Actorï¼Œå¹¶è®¾ç½®å…¶é¢œè‰²ä¸ºçº¢è‰²
 //    vtkSmartPointer<vtkActor> actor3 = vtkSmartPointer<vtkActor>::New();
 //    actor3->SetMapper(mapper3);
-//    actor3->GetProperty()->SetColor(0, 1, 0);  // ÉèÖÃÑÕÉ«ÎªºìÉ«
-//    actor3->SetPosition(tumorCenter3);  // ½«ÍÖÇòÌå·ÅÖÃµ½Ö×ÁöÖÊĞÄÎ»ÖÃ
+//    actor3->GetProperty()->SetColor(0, 1, 0);  // è®¾ç½®é¢œè‰²ä¸ºçº¢è‰²
+//    actor3->SetPosition(tumorCenter3);  // å°†æ¤­çƒä½“æ”¾ç½®åˆ°è‚¿ç˜¤è´¨å¿ƒä½ç½®
 //    actor3->GetProperty()->SetOpacity(0.8);
-//    // ½«ÖĞĞÄ×ø±êÌí¼Óµ½ vtkPoints ÖĞ
+//    // å°†ä¸­å¿ƒåæ ‡æ·»åŠ åˆ° vtkPoints ä¸­
 //    cu4->InsertNextPoint(tumorCenter4);
-//    // ´´½¨ÍÖÇòÌåµÄ Actor£¬²¢ÉèÖÃÆäÑÕÉ«ÎªºìÉ«
+//    // åˆ›å»ºæ¤­çƒä½“çš„ Actorï¼Œå¹¶è®¾ç½®å…¶é¢œè‰²ä¸ºçº¢è‰²
 //    vtkSmartPointer<vtkActor> actor4 = vtkSmartPointer<vtkActor>::New();
 //    actor4->SetMapper(mapper4);
-//    actor4->GetProperty()->SetColor(0, 0, 1);  // ÉèÖÃÑÕÉ«ÎªºìÉ«
-//    actor4->SetPosition(tumorCenter4);  // ½«ÍÖÇòÌå·ÅÖÃµ½Ö×ÁöÖÊĞÄÎ»ÖÃ
+//    actor4->GetProperty()->SetColor(0, 0, 1);  // è®¾ç½®é¢œè‰²ä¸ºçº¢è‰²
+//    actor4->SetPosition(tumorCenter4);  // å°†æ¤­çƒä½“æ”¾ç½®åˆ°è‚¿ç˜¤è´¨å¿ƒä½ç½®
 //    actor4->GetProperty()->SetOpacity(0.8);
 //
-//    // ´´½¨Ò»¸ö Actor À´ÏÔÊ¾µã
+//    // åˆ›å»ºä¸€ä¸ª Actor æ¥æ˜¾ç¤ºç‚¹
 //    vtkSmartPointer<vtkActor> cuactor1 = vtkSmartPointer<vtkActor>::New();
 //    cuactor1->SetMapper(cumapper1);
-//    cuactor1->GetProperty()->SetColor(1, 1, 0);//huangÉ«
+//    cuactor1->GetProperty()->SetColor(1, 1, 0);//huangè‰²
 //    cuactor1->GetProperty()->SetPointSize(2);
-//    // ´´½¨Ò»¸ö Actor À´ÏÔÊ¾µã
+//    // åˆ›å»ºä¸€ä¸ª Actor æ¥æ˜¾ç¤ºç‚¹
 //    vtkSmartPointer<vtkActor> cuactor2 = vtkSmartPointer<vtkActor>::New();
 //    cuactor2->SetMapper(cumapper2);
-//    cuactor2->GetProperty()->SetColor(1, 0, 0);//À¶É«
+//    cuactor2->GetProperty()->SetColor(1, 0, 0);//è“è‰²
 //    cuactor2->GetProperty()->SetPointSize(2);
-//    // ´´½¨Ò»¸ö Actor À´ÏÔÊ¾µã
+//    // åˆ›å»ºä¸€ä¸ª Actor æ¥æ˜¾ç¤ºç‚¹
 //    vtkSmartPointer<vtkActor> cuactor3 = vtkSmartPointer<vtkActor>::New();
 //    cuactor3->SetMapper(cumapper3);
 //    cuactor3->GetProperty()->SetColor(0.0, 1.0, 0.0);//lv se
 //    cuactor3->GetProperty()->SetPointSize(2);
-//    // ´´½¨Ò»¸ö Actor À´ÏÔÊ¾µã
+//    // åˆ›å»ºä¸€ä¸ª Actor æ¥æ˜¾ç¤ºç‚¹
 //    vtkSmartPointer<vtkActor> cuactor4 = vtkSmartPointer<vtkActor>::New();
 //    cuactor4->SetMapper(cumapper4);
 //    cuactor4->GetProperty()->SetColor(0.0, 0.0, 1.0);//red
@@ -520,7 +520,7 @@
 //    //renderer->AddActor(tumorActor);
 //    renderer->AddActor(liverActor);
 //    renderer->AddActor(ArteryActor);
-//    renderer->SetBackground(1, 1, 1); // ÉèÖÃ±³¾°ÑÕÉ«£¬doubleÀàĞÍ
+//    renderer->SetBackground(1, 1, 1); // è®¾ç½®èƒŒæ™¯é¢œè‰²ï¼Œdoubleç±»å‹
 //    renderWindow->Render();
 //    renderWindowInteractor->Start();
 //
